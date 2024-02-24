@@ -1,0 +1,95 @@
+#TGreen {
+    --bg: #1e2e25;
+    --block-color: #192619;
+    --block-color-hover: #83bb8b;
+    --block-setting-hover: #223328;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #47514d;
+    --border-hover: 2px solid #83bb9a;
+    --project-list-warning-color: #46715f;
+    --project-list-description-color: #365643;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;
+}
+
+#TRed {
+    --bg: #2e1e1e;
+    --block-color: #261919;
+    --block-color-hover: #bb8383;
+    --block-setting-hover: #332222;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #514747;
+    --border-hover: 2px solid #bb8383;
+    --project-list-warning-color: #714646;
+    --project-list-description-color: #563636;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;	
+}
+
+#TYellow {
+    --bg: #2e2c1e;
+    --block-color: #262519;
+    --block-color-hover: #b9bb83;
+    --block-setting-hover: #323322;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #515047;
+    --border-hover: 2px solid #bbba83;
+    --project-list-warning-color: #716946;
+    --project-list-description-color: #565136;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;	
+}
+
+#TEmeraild {
+    --bg: #1e2d2e;
+    --block-color: #192625;
+    --block-color-hover: #83babb;
+    --block-setting-hover: #223332;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #475151;
+    --border-hover: 2px solid #83bbb9;
+    --project-list-warning-color: #466e71;
+    --project-list-description-color: #365456;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;	
+}
+
+#TPurple {
+    --bg: #241e2e;
+    --block-color: #1d1926;
+    --block-color-hover: #9f83bb;
+    --block-setting-hover: #282233;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #4c4751;
+    --border-hover: 2px solid #9c83bb;
+    --project-list-warning-color: #544671;
+    --project-list-description-color: #3d3656;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;	
+}
+
+#TOrange {
+    --bg: #2e261e;
+    --block-color: #261f19;
+    --block-color-hover: #bba383;
+    --block-setting-hover: #332c22;
+    --color-text: #FFF;
+    --color-h2: #eaeaea;
+    --color-icon: #FFF;
+    --border: 2px solid #514d47;
+    --border-hover: 2px solid #bba083;
+    --project-list-warning-color: #715d46;
+    --project-list-description-color: #564536;
+    --copy-color: #5aa772;
+    --border-copy: 2px solid #5aa772;	
+}

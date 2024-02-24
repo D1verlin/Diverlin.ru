@@ -1,0 +1,48 @@
+:root {
+    --block-color: transparent !important;
+}
+
+body:after {
+	 content: '';
+    top: 0;
+    background: url(snow_1.png) fixed,url(snow_2.png) fixed,url(snow_3.png) fixed;
+    -webkit-animation: animation-snow 10s linear infinite;
+    -moz-animation: animation-snow 10s linear infinite;
+    -ms-animation: animation-snow 10s linear infinite;
+    animation: animation-snow 10s linear infinite;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: .08
+}
+
+@-webkit-keyframes animation-snow {
+    from {
+        background-position: 0 0,0 0,0 0
+    }
+
+    to {
+        background-position: 500px 500px,400px 400px,300px 300px
+    }
+}
+
+@-moz-keyframes animation-snow {
+    from {
+        background-position: 0 0,0 0,0 0
+    }
+
+    to {
+        background-position: 500px 500px,400px 400px,300px 300px
+    }
+}
+
+@keyframes animation-snow {
+    from {
+        background-position: 0 0,0 0,0 0
+    }
+
+    to {
+        background-position: 500px 500px,400px 400px,300px 300px
+    }
+}

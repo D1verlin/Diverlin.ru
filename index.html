@@ -1,23 +1,167 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Diverlin</title>
-  <style>
-    div {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  </style>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q5P5L2GNEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q5P5L2GNEE');
+</script>
+	<title>Diverlin</title>
+	<meta name="theme-color" content="#1E242E">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="themes.css">
+	<link rel="shortcut icon" href="Icons/PS.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://kit.fontawesome.com/5f3b807c89.js" crossorigin="anonymous"></script>
+	<meta name="Description" content="My personal site. Here you can find how to contact me, and look at my pet-projects">
+  <!--<link id="snowlink" rel="stylesheet" type="text/css" href="snow/snow.css">  SNOW -->
+  <style>.toggle-icon {d: path("M6 19a5 5 0 0 1-5-5a5 5 0 0 1 5-5c1-2.35 3.3-4 6-4c3.43 0 6.24 2.66 6.5 6.03L19 11a4 4 0 0 1 4 4a4 4 0 0 1-4 4H6m13-6h-2v-1a5 5 0 0 0-5-5c-2.5 0-4.55 1.82-4.94 4.19C6.73 11.07 6.37 11 6 11a3 3 0 0 0-3 3a3 3 0 0 0 3 3h13a2 2 0 0 0 2-2a2 2 0 0 0-2-2z");}</style>
+  <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="Fonts/Geometria/GeometriaFont.css">
+	<script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
 </head>
+<body class="ThemesPlus">
+	<input type="text" value="Diverlin#9908" id="myInput">
+<header>
+	<div class="profile">
+	<span id="box-header"><span id="icon-spin" class="iconify" data-icon="twemoji:waving-hand" data-inline="false"></span></span>
+	<h1>Diverlin</h1>
+	</div>
+	<div class="settings">
+<!-- <a id="btn-dropdown" onclick="Snow()"><svg id="snow_obj" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path id="svgedit" d="M6 14a1 1 0 0 1 1 1a1 1 0 0 1-1 1a5 5 0 0 1-5-5a5 5 0 0 1 5-5c1-2.35 3.3-4 6-4c3.43 0 6.24 2.66 6.5 6.03L19 8a4 4 0 0 1 4 4a4 4 0 0 1-4 4h-1a1 1 0 0 1-1-1a1 1 0 0 1 1-1h1a2 2 0 0 0 2-2a2 2 0 0 0-2-2h-2V9a5 5 0 0 0-5-5C9.5 4 7.45 5.82 7.06 8.19C6.73 8.07 6.37 8 6 8a3 3 0 0 0-3 3a3 3 0 0 0 3 3m1.88 4.07l2.19-.57l-1.61-1.62c-.39-.38-.39-1.02 0-1.42c.39-.39 1.04-.39 1.42 0l1.62 1.61l.57-2.19a1 1 0 1 1 1.93.52l-.59 2.19L15.6 16a1 1 0 1 1 .52 1.93l-2.19.57l1.61 1.62c.39.38.39 1.03 0 1.42c-.39.39-1.04.39-1.42 0l-1.62-1.61l-.57 2.19A1 1 0 1 1 10 21.6l.59-2.19L8.4 20a1 1 0 1 1-.52-1.93z" fill="currentColor"/></svg></a> -->
+		<div class="lang">
+			<a id="btn-dropdown" onclick="LangDropDown()"><span class="iconify" data-icon="fluent:paint-brush-16-regular"></span></span></a>
+			  <div id="lang-Dropdown" class="lang-content"> <!-- id="active" for list obj -->
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Default')">Default</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Green')">Green</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Red')">Red</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Yellow')">Yellow</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Emeraild')">Emeraild</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Purple')">Purple</a>
+			  	<a class="list_elem" id="default" onclick="ChangeTheme('Orange')">Orange</a>
+				<input type="checkbox" id="modes_th">
+			  	<label for="modes_th" class="theme_lock_btn"><span class="iconify" data-icon="bxs:lock-open-alt"></span></label>								
+  </div>
+		</div>
 
-<body>
-<div>
-  <h1>In progress</h1>
+	</div>
+</header>
+<div class="container">
+	<div class="min-container" id="Comms">
+		<header>
+			<h2>Communication</h2>
+
+<input type="checkbox" id="modes_l">
+<label for="modes_l" class="fas m_d_l"></label>
+			</div>
+		</header>
+		<div class="groups">
+			<a id="email" href="mailto:dodobrest006@gmail.com"><span class="iconify" data-icon="dashicons:email" data-inline="false"></span></a>
+			<a id="tg" href="https://t.me/diverlin"><span class="iconify" data-icon="akar-icons:telegram-fill" data-inline="false"></span>
+			</a>
+			<a id="boxcopy" onclick="CopyText()"><span id="copylink" class="iconify" data-icon="simple-icons:discord" data-inline="false"></span></a>
+			<a id="gh" href="https://github.com/D1verlin"><span class="iconify" data-icon="akar-icons:github-fill" data-inline="false"></span>
+			</a>			
+		</div>
+	</div>
+	<div class="container" id="Projects">
+		<header><h2>Projects</h2></header>
+		<div class="project-list">
+			<div class="box">
+		<header><h3>My Css Styles</h3><nav>
+			<a href="https://github.com/D1verlin/My-Css-Styles"><span class="iconify" data-icon="akar-icons:github-fill" data-inline="false"></span></a>
+			<a class="box-header-nav" href="https://d1verlin.github.io/My-Css-Styles/">
+			<span class="iconify" data-icon="ic:outline-launch" data-inline="false"></span></a></nav></header>
+		<div class="list">
+		<p id="l_info">
+				Collection of custom css styles
+				for the Stylish plugin
+		</p>
+		</div>
+	</div>
+<div class="box">
+		<header><h3>WSA</h3><nav><a class="box-header-nav" href="https://d1verlin.github.io/WSA/"><span class="iconify" data-icon="ic:outline-launch" data-inline="false"></span></a></nav></header>
+		<div class="list">
+		<p id="l_info">
+			Installation assistance and
+			configuring windows
+		</p>
+		</div>
+	</div>
+	<!-- /// -->
+<div class="box">
+		<header><h3>TTTS</h3><nav><a href="https://github.com/D1verlin/TTTS/wiki/Home-%5BEN%5D"><span class="iconify" data-icon="akar-icons:github-fill" data-inline="false"></span></a><a class="box-header-nav" href="https://ttts.ml/"><span class="iconify" data-icon="ic:outline-launch" data-inline="false"></span></a></nav></header>
+		<div class="list">
+		<p id="l_info">
+			Improved Tic Tac Toe with Points and Modes
+		</p>
+		</div>
+	</div>
+
+		</div>
+	</div>
 </div>
-</body>
+<script>
+	/* Discord Link */
+	function CopyText() {
+  /* Get the text field */
+  var copyText = document.getElementById("myInput");
 
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices 
+
+  /* Copy text in text field */
+  document.execCommand("copy");
+  CopiedNotify();
+}
+function CopiedNotify() {
+
+	document.getElementById("copylink").remove();
+	let boxcopy = document.getElementById("boxcopy");
+	let spanlink = document.createElement('span');
+
+	spanlink.className = "iconify animate__animated animate__fadeIn";
+	spanlink.setAttribute("id","copylink")
+	spanlink.setAttribute("data-icon","akar-icons:link-chain");
+	spanlink.setAttribute("data-inline","false");
+
+	boxcopy.prepend(spanlink);
+	boxcopy.style.background = "var(--copy-color)";
+	boxcopy.style.border = "var(--border-copy";
+
+	var TimetoClose;
+	TimetoClose = window.setTimeout(CloseNotify, 1000); // 1.5s to start CloseNotify() 
+}
+function CloseNotify() {
+	document.getElementById("copylink").remove();
+	let boxcopy = document.getElementById("boxcopy");
+	let spanlink = document.createElement('span');
+	spanlink.className = "iconify animate__animated animate__fadeIn";
+	spanlink.setAttribute("id","copylink")
+	spanlink.setAttribute("data-icon","simple-icons:discord");
+	spanlink.setAttribute("data-inline","false");
+
+	boxcopy.prepend(spanlink);
+	boxcopy.style.background = "";
+	boxcopy.style.border = "";
+}
+</script>
+
+<script>
+function LangDropDown() {
+	document.getElementById("lang-Dropdown").classList.toggle("show");
+}
+
+</script>
+<script src="qrcodes.js"></script>
+<script src="themes.js"></script>
+<!--<script src="snow/snow.js"></script>  SNOW -->
+</body>
 </html>

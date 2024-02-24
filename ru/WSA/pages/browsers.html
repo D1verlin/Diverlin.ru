@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>WSA | browsers</title>
+	<meta name="theme-color" content="#252525">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+  <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../../Fonts/Geometria/GeometriaFont.css">
+	<link rel="shortcut icon" href="../../../Icons/WSA.ico" type="image/x-icon">
+</head>
+<body>
+<header>
+	<nav class="one">
+	<h1>WSA</h1>
+	<div class="address"><a href="../index.html">home</a><h2>\</h2><a href="#">browsers</a></div></nav>
+	<nav class="two">
+				<div class="lang">
+			<a id="btn-dropdown" onclick="LangDropDown()"><span class="iconify" data-icon="grommet-icons:language"></span></a>
+			  <div id="lang-Dropdown" class="lang-content">
+			  	<a id="default" href="../../../WSA/pages/browsers.html">Eng</a>
+			  	<a id="active" href="#">Rus</a>
+  </div>
+		</div>
+	</nav>
+</header>
+<main>
+	<content>
+		<h2>Браузеры</h2>
+		<div class="container">
+
+			<div class="card_b" id="c_chrome">
+				<nav class="top_bg">
+					<h2>Chrome</h2>
+				</nav>
+				<nav class="bottom_bg">
+					<a href="https://www.google.com/chrome/" class="card_btn"><span class="iconify" data-icon="mdi:google-chrome"></span></a>
+				</nav>
+			</div>			
+
+			<div class="card_b" id="c_firefox">
+				<nav class="top_bg">
+					<h2>Firefox</h2>
+				</nav>
+				<nav class="bottom_bg">
+					<a href="https://www.mozilla.org/ru/firefox/new/" class="card_btn"><span class="iconify" data-icon="bx:bxl-firefox"></span></a>
+				</nav>
+			</div>
+
+		</div>
+	</content>
+</main>
+<footer>
+	<img src="../../../Mashiro_Shino.jpg">
+	<span id="delimiter"></span>
+	<div class="text-block">
+	<p>&copy; 2020-2022</p>
+	<p>Все права защищены.</p>
+	</div>
+</footer>
+<script>
+function LangDropDown() {
+	document.getElementById("lang-Dropdown").classList.toggle("show");
+}
+</script>
+</body>
+</html>
