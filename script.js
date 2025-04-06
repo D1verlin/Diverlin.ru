@@ -24,7 +24,8 @@
     generateLinks(links);
 
     const projects = [
-        { name: 'WSA', icon: 'quill:link-out', href: 'https://wsa.diverlin.ru', description: 'Installation assistance and configuring windows'}
+        { name: 'WSA', href: 'https://wsa.diverlin.ru', description: 'Installation assistance and configuring windows'},
+        { name: 'Bookmarks Hub', href: 'https://bh.diverlin.ru/', description: 'Bookmark manager'},
     ];
 
     function genereateProjects(projects) {
@@ -41,7 +42,7 @@
             h2.innerHTML = project.name;
             let span = document.createElement("span");
             span.className = 'iconify';
-            span.setAttribute("data-icon",project.icon);
+            span.setAttribute("data-icon","quill:link-out");
             let description = document.createElement("p");
             description.innerHTML = project.description;
             p_header.prepend(h2);p_header.append(span);
