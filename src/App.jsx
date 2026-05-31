@@ -422,21 +422,26 @@ export default function App() {
                       onVolumeChange={setVolume}
                    /> 
       } 
-    ],
-    // Слайд 2 (Проекты генерируются из массива projectsList)
-    projectsList.map((proj, idx) => ({
-      id: `project-${idx}`,
-      spotlightColor: `${proj.color}40`, // Добавляем прозрачность к цвету проекта для Spotlight
-      c: <ProjectCard 
-            color={proj.color} 
-            title={proj.title} 
-            desc={proj.desc} 
-            date={proj.date} 
-            tags={proj.tags} 
-            link={proj.link} 
-         />
-    }))
+    ]
   ];
+
+  // Слайды с проектами (по 4 на страницу)
+  for (let i = 0; i < projectsList.length; i += 4) {
+    slidesData.push(
+      projectsList.slice(i, i + 4).map((proj, idx) => ({
+        id: `project-${i + idx}`,
+        spotlightColor: `${proj.color}40`, // Добавляем прозрачность к цвету проекта для Spotlight
+        c: <ProjectCard 
+              color={proj.color} 
+              title={proj.title} 
+              desc={proj.desc} 
+              date={proj.date} 
+              tags={proj.tags} 
+              link={proj.link} 
+           />
+      }))
+    );
+  }
 
   return (
     <div className="app-container">
