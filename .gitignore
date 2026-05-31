@@ -1,10 +1,7 @@
 # Зависимости
 node_modules/
 
-# Папки со сборкой (продакшн)
-dist/
-dist-ssr/
-build/
+
 
 # Логи
 logs
