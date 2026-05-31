@@ -26,12 +26,12 @@ const playlist = [
 // =========================================
 // БАЗА ДАННЫХ ПРОЕКТОВ
 // =========================================
-// cmd - это команда для терминала
 const projectsList = [
   { cmd: "wsa", color: "#86edff", title: "WSA", desc: "windows system assistant", date: "12.06.2023", tags: ["HTML", "CSS", "JS"], link: "https://wsa.diverlin.ru" },
   { cmd: "bh", color: "#d06bff", title: "Bookmarks Hub", desc: "Bookmarks makers with out in JSON", date: "17.06.2025", tags: ["React", "JSON"], link: "https://bh.diverlin.ru" },
   { cmd: "crt", color: "#54e460", title: "CRT Overlay", desc: "Оверлей-эффект старого ЭЛТ/CRT монитора на весь экран", date: "06.10.2025", tags: ["Python", "PyQt6", "PySide6"], link: "https://github.com/D1verlin/desktop-crt-overlay" },
-  { cmd: "sdf", color: "#ff7070", title: "SDF", desc: "My pastebin clone", date: "17.02.2026", tags: ["Node.js", "Express", "Sqlite"], link: "https://sdf.diverlin.ru" }
+  { cmd: "sdf", color: "#ff7070", title: "SDF", desc: "My pastebin clone", date: "17.02.2026", tags: ["Node.js", "Express", "Sqlite"], link: "https://sdf.diverlin.ru" },
+  { cmd: "dns", color: "#85ffae", title: "DNS Manager", desc: "Утилита настройки DNS", date: "31.05.2026", tags: ["PowerShell", ".NET"], link: "https://github.com/D1verlin/DNS-Manager" }
 ];
 
 

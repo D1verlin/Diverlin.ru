@@ -1,0 +1,316 @@
+@font-face {
+  font-family: 'Special Gothic Expanded One';
+  src: url('assets/fonts/SpecialGothicExpandedOne-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Google Sans';
+  src: url('assets/fonts/GoogleSans-VariableFont_GRAD\,opsz\,wght.ttf') format('truetype');
+}
+
+:root {
+  --font-title: 'Special Gothic Expanded One', sans-serif; 
+  --font-body: 'Google Sans', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: white;
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+
+/* Используем 100dvh, чтобы на телефонах панель браузера не перекрывала сайт */
+.app-container {
+  position: relative;
+  width: 100vw;
+  height: 100dvh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.5) saturate(1.1) blur(0px);
+  transition: filter 1s ease-in-out;
+}
+
+.bg-video.blur-active {
+  filter: brightness(0.4) saturate(1.1) blur(120px);
+}
+
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  background: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Строго центрируем контейнер со слайдами */
+.slider-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================
+   GRID & MOBILE ADAPTATION
+========================================= */
+.grid-wrapper {
+  display: grid;
+  /* Мобильная версия: идеальный квадрат */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 90vw;
+  height: 90vw; 
+  max-width: 400px;
+  max-height: 400px;
+}
+
+.grid-item {
+  width: 100%;
+  height: 100%;
+  min-width: 0; /* Чтобы контент не распирал карточку */
+  min-height: 0;
+}
+
+/* Настольная версия: жесткие размеры для идеального центрирования */
+@media (min-width: 768px) {
+  .grid-wrapper {
+    grid-template-columns: 300px 300px;
+    grid-template-rows: 300px 300px;
+    gap: 20px;
+    width: 620px; /* 300 + 300 + 20 */
+    height: 620px;
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* =========================================
+   CARDS COMMON
+========================================= */
+.card-spotlight {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(20px);
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-spotlight:hover::before {
+  opacity: 1;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px; 
+  box-sizing: border-box;
+  position: relative; 
+  z-index: 2;         
+}
+
+/* Profile Card */
+.profile-card-v2 {
+  justify-content: space-between; 
+  align-items: flex-start; 
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+              linear-gradient(180deg, rgba(232, 232, 222, 0.4) 0%, rgba(220, 214, 200, 0.4) 100%);
+}
+
+.avatar-stack { position: relative; width: 90px; height: 90px; margin-top: 5px; }
+.avatar-main, .avatar-shadow { position: absolute; width: 100%; height: 100%; border-radius: 22px; }
+.avatar-main { z-index: 3; overflow: hidden; background: #eee; }
+.avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-shadow { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(5px); z-index: 1; }
+.shadow-1 { animation: float-shadow-1 2s ease-in-out infinite; z-index: 2; }
+.shadow-2 { animation: float-shadow-2 3s ease-in-out infinite; animation-delay: 1s; z-index: 1; }
+
+@keyframes float-shadow-1 {
+  0%, 100% { transform: translate(4px, -2px); opacity: 0.3; }
+  50% { transform: translate(10px, -6px); opacity: 0.6; }
+}
+@keyframes float-shadow-2 {
+  0%, 100% { transform: translate(8px, -4px); opacity: 0.2; }
+  50% { transform: translate(18px, -10px); opacity: 0.4; }
+}
+
+.profile-info-v2 { width: 100%; text-align: left; }
+.profile-name-v2 {
+  margin: 0; font-family: var(--font-title); font-size: 2.2rem; font-weight: 900;
+  color: rgba(255, 255, 255, 0.69); letter-spacing: -1px; line-height: 0.9;
+  text-transform: uppercase; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.69)); 
+}
+.profile-role-v2 { margin: 8px 0 0 0; font-size: 0.95rem; font-weight: 400; color: #FFF6E0; letter-spacing: 0.5px; }
+
+/* Terminal Card */
+.terminal-card {
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(180deg, rgba(0, 140, 9, 0.2) 0%, rgba(0, 135, 9, 0.2) 100%);
+  font-family: 'JetBrains Mono', monospace; color: #4ade80; font-size: 0.8rem; cursor: text;
+}
+.terminal-body { flex: 1; overflow-y: auto; margin: 10px 0; }
+.terminal-body::-webkit-scrollbar { display: none; }
+.log-line.user { color: #289450; font-weight: bold; margin-top: 6px; }
+.log-line.info { opacity: 0.7; }
+.terminal-input-area { display: flex; align-items: center; gap: 8px; padding-top: 12px; }
+.terminal-input-area input { background: transparent; border: none; outline: none; width: 100%; font-family: inherit; font-size: 0.8rem; color: #4ade80; }
+.prompt-sign { color: #4ade80; width: 10%; }
+
+/* Socials Card */
+.socials-card { display: flex; align-items: center; justify-content: center; }
+.socials-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; width: 100%; height: 100%; }
+.social-btn {
+  display: flex; align-items: center; justify-content: center; border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none;
+}
+.social-btn:hover { color: #fff; background: var(--hover-color); }
+
+/* Music Card */
+.music-card-new { display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; }
+.music-cover-wrapper { width: 90px; height: 90px; min-width: 90px; min-height: 90px; border-radius: 50%; overflow: hidden; margin-bottom: 10px; transition: transform 0.5s ease; flex-shrink: 0; }
+.music-cover-wrapper.playing { transform: scale(1.05); }
+.music-cover-img { width: 100%; height: 100%; object-fit: cover; }
+.music-details { width: 100%; margin-bottom: 5px; flex-shrink: 1; }
+.music-details h3 { margin: 0; font-family: var(--font-title); font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.music-details p { margin: 4px 0 0 0; font-size: 0.8rem; opacity: 0.7; }
+.music-controls-new { display: flex; align-items: center; justify-content: center; gap: 25px; margin: 5px 0 10px 0; width: 100%; flex-shrink: 0; }
+.control-btn { background: none; border: none; cursor: pointer; color: white; opacity: 0.9; transition: transform 0.2s, opacity 0.2s; display: flex; padding: 0; }
+.control-btn:hover { opacity: 1; transform: scale(1.1); }
+.control-btn:active { transform: scale(0.95); }
+
+/* Volume Indicator Apple Watch */
+.volume-indicator-aw {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 6px; height: 110px;
+  background: rgba(255, 255, 255, 0.15); border-radius: 10px; overflow: hidden; display: flex;
+  flex-direction: column-reverse; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); z-index: 10;
+}
+.volume-fill-aw { width: 100%; background: #fff; border-radius: 10px; transition: height 0.1s ease-out; }
+
+/* Mini Player Widget */
+.mini-player {
+  position: fixed; top: 20px; left: 50%; z-index: 100; background: rgba(20, 20, 20, 0.5); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 100px; padding: 8px 20px 8px 8px; display: flex;
+  align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.mini-cover-wrapper { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; transition: transform 0.5s ease; }
+.mini-cover-wrapper.playing { transform: scale(1.1); }
+.mini-cover-img { width: 100%; height: 100%; object-fit: cover; }
+.mini-info { display: flex; flex-direction: column; width: 120px; }
+.mini-info h4 { margin: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-title); color: white;}
+.mini-info p { margin: 2px 0 0 0; font-size: 0.7rem; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-controls { display: flex; gap: 14px; margin-left: 5px; }
+.mini-controls button { background: none; border: none; color: white; cursor: pointer; opacity: 0.8; padding: 0; display: flex; transition: all 0.2s; }
+.mini-controls button:hover { opacity: 1; transform: scale(1.15); }
+
+/* Projects Card */
+.project-card { display: flex; flex-direction: column; justify-content: space-between; }
+.project-card h2 { font-family: var(--font-title); font-size: 1.5rem; margin-bottom: 8px; color: #60a5fa; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.project-card h3 { font-size: 0.8rem; margin: 0 0 10px 0; opacity: 0.7; }
+.project-card p { font-size: 0.9rem; line-height: 1.5; opacity: 0.8; margin: 0;}
+.project-btn { 
+  margin-top: auto; padding: 10px 20px; background: rgba(255,255,255,0.08); 
+  border: 2px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; cursor: pointer; 
+  transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; filter: saturate(0.3); text-decoration: none;
+}
+.project-btn:hover { filter: saturate(1); letter-spacing: 0.03em; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+.tag { font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; padding: 4px 10px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: rgba(255, 255, 255, 0.6); text-transform: uppercase; transition: all 0.3s ease; }
+.card-spotlight:hover .tag { border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+/* Scroll Indicator */
+.scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+@keyframes scroll-wheel { 0% { opacity: 0; transform: translateY(-3px); } 20% { opacity: 1; transform: translateY(0); } 80% { opacity: 1; transform: translateY(8px); } 100% { opacity: 0; transform: translateY(12px); } }
+.mouse-icon { width: 20px; height: 32px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.05); }
+.wheel { width: 2px; height: 6px; background: white; border-radius: 2px; animation: scroll-wheel 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.scroll-indicator span { animation: pulse-text 2s ease-in-out infinite; }
+@keyframes pulse-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.7; } }
+
+
+/* =========================================
+   MOBILE ADAPTATION DETAILS (ЭКРАНЫ МЕНЬШЕ 768px)
+========================================= */
+@media (max-width: 767px) {
+  /* Уменьшаем отступы в карточках, чтобы влез контент */
+  .card { padding: 14px; }
+  
+  /* Profile Card */
+  .profile-card-v2 { 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+  }
+  .profile-info-v2 { text-align: center; margin-top: 10px; }
+  .avatar-stack { width: 60px; height: 60px; margin: 0 auto; }
+  .profile-name-v2 { font-size: 1.3rem; }
+  .profile-role-v2 { font-size: 0.7rem; margin-top: 2px; }
+  
+  /* Terminal Card */
+  .terminal-card { font-size: 0.6rem; }
+  .terminal-input-area input { font-size: 0.6rem; }
+  .terminal-body { margin: 5px 0; }
+  
+  /* Socials Card */
+  .socials-grid { gap: 10px; }
+  .social-btn svg { width: 24px; height: 24px; }
+  
+  /* Music Card */
+  .music-cover-wrapper { width: 55px; height: 55px; min-width: 55px; min-height: 55px; margin-bottom: 6px; }
+  .music-details h3 { font-size: 0.9rem; }
+  .music-details p { font-size: 0.6rem; margin-top: 2px; }
+  .music-controls-new { gap: 15px; margin: 6px 0; }
+  .control-btn svg { width: 16px; height: 16px; }
+  .control-btn:nth-child(2) svg { width: 24px; height: 24px; }
+  .volume-indicator-aw { right: 6px; height: 65px; width: 4px;}
+  
+  /* Projects Card */
+  .project-card h2 { font-size: 0.95rem; margin-bottom: 2px; }
+  .project-card h3 { font-size: 0.6rem; margin-bottom: 6px;}
+  .project-card p { 
+    font-size: 0.65rem; 
+    line-height: 1.3;
+    /* Если текст описания слишком длинный, он обрежется троеточием после 2-й строки */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .project-btn { padding: 6px 10px; font-size: 0.65rem; border-radius: 8px; margin-top: 8px;}
+  .tags { margin-top: 6px; gap: 4px; }
+  .tag { font-size: 0.5rem; padding: 2px 6px; }
+}
