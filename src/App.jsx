@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaDiscord, FaTelegramPlane, FaGithub, FaSteam, 
-  FaPlay, FaPause, FaStepBackward, FaStepForward, FaExternalLinkAlt 
+  FaPlay, FaPause, FaStepBackward, FaStepForward, FaExternalLinkAlt, FaCodeBranch
 } from 'react-icons/fa';
 import './App.css';
 
@@ -52,112 +52,140 @@ const ProfileCard = () => (
   </div>
 );
 
-// --- 2. TERMINAL ---
-const TerminalCard = ({ onMatrix }) => {
-  const [input, setInput] = useState("");
-  const [logs, setLogs] = useState([
-    { type: 'info', text: 'Welcome ✌️' },
-    { type: 'info', text: 'Type "help" for commands.' }
-  ]);
-  const inputRef = useRef(null);
-  const bottomRef = useRef(null);
+// --- 2. GITHUB WIDGET ---
+const GithubCard = () => {
+  const [data, setData] = useState(null);
+  const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Автоматически генерируем команды из массива проектов
-  const projectCommands = projectsList.reduce((acc, proj) => {
-    acc[proj.cmd] = async () => {
-      window.open(proj.link, "_blank");
-      return `Opening ${proj.title}...`;
-    };
-    return acc;
-  }, {});
-
-  const commands = {
-    // В help автоматически подтянутся имена всех проектов
-    help: async () => `Available: help, github, matrix, play, pause, next, clear, ${projectsList.map(p => p.cmd).join(', ')}`,
-    
-    github: async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const cachedData = sessionStorage.getItem('github_data');
+        const cachedData = sessionStorage.getItem('github_data_v4');
         if (cachedData) {
-          const data = JSON.parse(cachedData);
-          return `GitHub Info (cached):\n- Repos: ${data.public_repos}\n- Followers: ${data.followers}\n- Bio: ${data.bio || "No bio"}`;
+          const parsed = JSON.parse(cachedData);
+          setData(parsed.user);
+          setRepos(parsed.repos);
+          setLoading(false);
+          return;
         }
-        const res = await fetch("https://api.github.com/users/D1verlin");
-        const data = await res.json();
-        if (!res.ok && data.message && data.message.includes("API rate limit")) {
-          return "GitHub API rate limit exceeded. Please try again later.";
+        
+        const [userRes, reposRes] = await Promise.all([
+          fetch("https://api.github.com/users/D1verlin"),
+          fetch("https://api.github.com/users/D1verlin/repos?sort=updated&per_page=3")
+        ]);
+
+        const userJson = await userRes.json();
+        let reposJson = await reposRes.json();
+
+        if (userRes.ok && reposRes.ok) {
+          reposJson = await Promise.all(reposJson.map(async (repo) => {
+            try {
+              const commitsRes = await fetch(`https://api.github.com/repos/D1verlin/${repo.name}/commits?per_page=1`);
+              let commitsCount = 0;
+              if (commitsRes.ok) {
+                const linkHeader = commitsRes.headers.get('link');
+                if (linkHeader) {
+                  const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+                  if (match) commitsCount = parseInt(match[1]);
+                } else {
+                  const commits = await commitsRes.clone().json();
+                  commitsCount = commits.length;
+                }
+              }
+              return { ...repo, commitsCount };
+            } catch (e) {
+              return repo;
+            }
+          }));
+
+          sessionStorage.setItem('github_data_v4', JSON.stringify({ user: userJson, repos: reposJson }));
+          setData(userJson);
+          setRepos(reposJson);
         }
-        sessionStorage.setItem('github_data', JSON.stringify(data));
-        return `GitHub Info:\n- Repos: ${data.public_repos}\n- Followers: ${data.followers}\n- Bio: ${data.bio || "No bio"}`;
       } catch (e) {
-        return "Error fetching GitHub API.";
+        console.error("Error fetching GitHub API.", e);
+      } finally {
+        setLoading(false);
       }
-    },
-    
-    matrix: async () => { onMatrix(); return "Wake up, Neo..."; },
-    play: async () => { window.dispatchEvent(new CustomEvent('music-control', { detail: 'play' })); return "Music started."; },
-    pause: async () => { window.dispatchEvent(new CustomEvent('music-control', { detail: 'pause' })); return "Music paused."; },
-    next: async () => { window.dispatchEvent(new CustomEvent('music-control', { detail: 'next' })); return "Playing next track..."; },
-    clear: async () => { setLogs([]); return ""; },
-
-    // Добавляем сгенерированные команды проектов
-    ...projectCommands
-  };
-
-  const handleKeyDown = async (e) => {
-    if (e.key === 'Enter') {
-      const trimmed = input.trim();
-      if (!trimmed) return;
-      const commandKey = trimmed.toLowerCase();
-      
-      setLogs(prev => [...prev, { type: 'user', text: `> ${trimmed}` }]);
-      setInput("");
-
-      if (commands[commandKey]) {
-        const response = await commands[commandKey]();
-        if (response) setLogs(prev => [...prev, { type: 'system', text: response }]);
-      } else {
-        setLogs(prev => [...prev, { type: 'system', text: "Command not found." }]);
-      }
-    }
-  };
-
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [logs]);
+    };
+    fetchData();
+  }, []);
 
   return (
-    <div className="card terminal-card" onClick={() => inputRef.current?.focus()}>
-      <div className="terminal-body">
-        {logs.map((log, i) => (
-          <div key={i} className={`log-line ${log.type}`} style={{ whiteSpace: 'pre-wrap' }}>{log.text}</div>
-        ))}
-        <div ref={bottomRef} />
+    <div className="card github-card">
+      <div className="github-header">
+        <div className="github-header-left">
+          <FaGithub size={20} className="github-icon-top" />
+          <span className="github-title">GitHub</span>
+        </div>
+        {data && (
+          <a href={data.html_url} target="_blank" rel="noreferrer" className="github-header-link">
+            <FaExternalLinkAlt size={14} />
+          </a>
+        )}
       </div>
-      <div className="terminal-input-area">
-        <span className="prompt-sign">~ $</span>
-        <input 
-          ref={inputRef} type="text" value={input}
-          onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} autoComplete="off"
-        />
-      </div>
+      {loading ? (
+        <div className="github-loading">Loading...</div>
+      ) : data ? (
+        <div className="github-content">
+          <div className="github-profile-row">
+            <div className="github-stats">
+              <div className="github-stat">
+                <span className="stat-val">{data.public_repos}</span>
+                <span className="stat-lbl">Repos</span>
+              </div>
+              <div className="github-stat">
+                <span className="stat-val">{data.followers}</span>
+                <span className="stat-lbl">Followers</span>
+              </div>
+            </div>
+          </div>
+          {data.bio && <p className="github-bio">{data.bio}</p>}
+          
+          <div className="github-repos">
+            {repos.map((repo, index) => (
+              <a key={repo.id} href={repo.html_url} target="_blank" rel="noreferrer" className="github-repo-card" style={{ "--depth-index": index }}>
+                <span className="repo-name">{repo.name}</span>
+                {repo.commitsCount !== undefined && (
+                  <span className="repo-commits">
+                    <FaCodeBranch size={10} /> {repo.commitsCount}
+                  </span>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="github-error">Error loading data</div>
+      )}
     </div>
   );
 };
 
 // --- 3. SOCIALS ---
-const SocialsCard = () => {
+import MaxLogo from './assets/Max_(app)_logo 1.svg';
+
+const SocialsCard = ({ onMaxPopup }) => {
   const socials = [
-    { Icon: FaDiscord, name: "discord", link: "https://discord.com/users/294066838579707904", color: "#5865f23a" },
-    { Icon: FaTelegramPlane, name: "telegram", link: "https://t.me/diverlin", color: "#229fd933" },
-    { Icon: FaGithub, name: "github", link: "https://github.com/D1verlin", color: "#ffffff2f" },
-    { Icon: FaSteam, name: "steam", link: "https://steamcommunity.com/id/D1verlin/", color: "#1b28382f" },
+    { Icon: FaDiscord, name: "discord", link: "https://discord.com/users/294066838579707904", color: "#5865f23a", isLink: true },
+    { Icon: FaTelegramPlane, name: "telegram", link: "https://t.me/diverlin", color: "#229fd933", isLink: true },
+    { Icon: ({size}) => <img src={MaxLogo} width={size} height={size} alt="Max" className="social-img-icon" />, name: "max", action: onMaxPopup, color: "#ffffff2f", isLink: false },
+    { Icon: FaSteam, name: "steam", link: "https://steamcommunity.com/id/D1verlin/", color: "#1b28382f", isLink: true },
   ];
   return (
     <div className="card socials-card">
       <div className="socials-grid">
-        {socials.map(({ Icon, name, link, color }, i) => (
-          <a key={i} href={link} target="_blank" rel="noreferrer" className={`social-btn ${name}`} style={{ "--hover-color": color }}>
-            <Icon size={48} />
-          </a>
+        {socials.map(({ Icon, name, link, action, color, isLink }, i) => (
+          isLink ? (
+            <a key={i} href={link} target="_blank" rel="noreferrer" className={`social-btn ${name}`} style={{ "--hover-color": color }}>
+              <Icon size={48} />
+            </a>
+          ) : (
+            <div key={i} onClick={action} className={`social-btn ${name}`} style={{ "--hover-color": color, cursor: 'pointer' }}>
+              <Icon size={48} />
+            </div>
+          )
         ))}
       </div>
     </div>
@@ -180,11 +208,9 @@ const MusicCard = ({ track, isPlaying, progress, duration, volume, onTogglePlay,
 
   return (
     <div className="card music-card-new" onWheel={handleWheel}>
-      <motion.div layoutId="music-cover-wrapper" className={`music-cover-wrapper ${isPlaying ? 'playing' : ''}`}>
-        <img src={track.cover} alt="Art" className="music-cover-img" />
-      </motion.div>
+      <motion.div layoutId="music-cover-wrapper" className="music-bg-cover" style={{ backgroundImage: `url(${track.cover})` }} />
 
-      <div className="music-details">
+      <div className="music-details" style={{ marginTop: 'auto' }}>
         <motion.h3 layoutId="music-title">{track.title}</motion.h3>
         <p>{track.author}</p>
       </div>
@@ -244,39 +270,24 @@ const ProjectCard = ({ color, title, desc, date, tags = [], link }) => (
   </div>
 );
 
-// =========================================
-// MATRIX EASTER EGG
-// =========================================
-const MatrixRain = () => {
-  const canvasRef = useRef(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const letters = "01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
 
-    const draw = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0F0";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-    };
-    const interval = setInterval(draw, 33);
-    return () => clearInterval(interval);
-  }, []);
-  return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: 9998, pointerEvents: 'none' }} />;
-};
-
+// =========================================
+// MAX POPUP
+// =========================================
+const MaxPopup = ({ onClose }) => (
+  <div className="max-popup-overlay" onClick={onClose}>
+    <motion.div 
+      className="max-popup-content" 
+      initial={{ scale: 0.8, opacity: 0 }} 
+      animate={{ scale: 1, opacity: 1 }} 
+      exit={{ scale: 0.8, opacity: 0 }} 
+      transition={{ type: "spring", bounce: 0.3 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img src="https://r2.diverlin.ru/Assets/max_final.webp" alt="Max" className="max-popup-img" />
+    </motion.div>
+  </div>
+);
 
 // =========================================
 // MAIN APP COMPONENT
@@ -286,7 +297,7 @@ export default function App() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
   const [isBgBlur, setIsBgBlur] = useState(false);
-  const [showMatrix, setShowMatrix] = useState(false);
+  const [isMaxPopupOpen, setIsMaxPopupOpen] = useState(false);
 
   // States Аудио
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -391,7 +402,7 @@ export default function App() {
     };
   }, [currentSlide, isAnimating]);
 
-  useEffect(() => { if (isAnimating) setTimeout(() => setIsAnimating(false), 800); }, [isAnimating]);
+  useEffect(() => { if (isAnimating) setTimeout(() => setIsAnimating(false), 500); }, [isAnimating]);
 
   // Смена фонов
   useEffect(() => {
@@ -410,8 +421,8 @@ export default function App() {
     // Слайд 1 (Главный экран)
     [ 
       { id: 'profile', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <ProfileCard /> }, 
-      { id: 'terminal', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <TerminalCard onMatrix={() => { setShowMatrix(true); setTimeout(() => setShowMatrix(false), 10000); }} /> }, 
-      { id: 'socials', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <SocialsCard /> }, 
+      { id: 'github', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <GithubCard /> }, 
+      { id: 'socials', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <SocialsCard onMaxPopup={() => setIsMaxPopupOpen(true)} /> }, 
       { id: 'music', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <MusicCard 
                       track={playlist[currentTrack]} isPlaying={isPlaying} progress={progress} duration={duration} volume={volume}
                       onTogglePlay={() => setIsPlaying(!isPlaying)}
@@ -445,12 +456,9 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {showMatrix && <MatrixRain />}
-
       <video key={bgIndex} className={`bg-video ${isBgBlur ? 'blur-active' : ''}`} autoPlay loop muted playsInline>
-        <source src={backgrounds[bgIndex]} type="video/mp4" />
+        <source src={backgrounds[bgIndex]} type="video/webm" />
       </video>
-      <div className="bg-noise" />
 
       <AnimatePresence>
         {currentSlide !== 0 && (
@@ -458,11 +466,15 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {isMaxPopupOpen && <MaxPopup onClose={() => setIsMaxPopupOpen(false)} />}
+      </AnimatePresence>
+
       <div className="slider-container">
         <AnimatePresence mode='wait'>
-          <motion.div key={currentSlide} initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -100, opacity: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="grid-wrapper">
+          <motion.div key={currentSlide} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: -60, opacity: 0 }} transition={{ duration: 0.35, ease: "easeOut" }} className="grid-wrapper">
             {slidesData[currentSlide].map((item, index) => (
-               <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 + 0.3 }} className="grid-item">
+               <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 + 0.1, duration: 0.4 }} className="grid-item-animated">
                  <SpotlightCard spotlightColor={item.spotlightColor || "rgba(255, 255, 255, 0.15)"}>
                     {item.c}
                  </SpotlightCard>
@@ -472,12 +484,16 @@ export default function App() {
         </AnimatePresence>
       </div>
       
-      {currentSlide === 0 && (
-         <div className="scroll-indicator">
-           <span>Scroll / Swipe</span>
-           <div className="mouse-icon"><div className="wheel" /></div>
-         </div>
-      )}
+
+      <div className="pagination-dots">
+        {slidesData.map((_, index) => (
+          <div 
+            key={index} 
+            className={`dot ${currentSlide === index ? 'active' : ''}`} 
+            onClick={() => setCurrentSlide(index)} 
+          />
+        ))}
+      </div>
     </div>
   );
 }
