@@ -20,7 +20,6 @@ body {
   overflow: hidden;
 }
 
-/* Используем 100dvh, чтобы на телефонах панель браузера не перекрывала сайт */
 .app-container {
   position: relative;
   width: 100vw;
@@ -55,7 +54,6 @@ body {
   z-index: 1;
 }
 
-/* Строго центрируем контейнер со слайдами */
 .slider-container {
   position: absolute;
   inset: 0;
@@ -97,7 +95,7 @@ body {
   -webkit-backdrop-filter: blur(16px);
 }
 
-/* Настольная версия: жесткие размеры для идеального центрирования */
+
 @media (min-width: 768px) {
   .grid-wrapper {
     grid-template-columns: 300px 300px;
@@ -220,11 +218,11 @@ body {
 .socials-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; width: 100%; height: 100%; }
 .social-btn {
   display: flex; align-items: center; justify-content: center; border-radius: 20px;
-  background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none;
+  background: rgba(255, 255, 255, 0.05); border: none;
+  color: rgba(255, 255, 255, 0.6); transition: all 0.3s ease; text-decoration: none;
 }
 .social-btn:hover { color: #fff; background: var(--hover-color); }
-.social-img-icon { opacity: 0.6; filter: brightness(0) invert(1); transition: opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.social-img-icon { opacity: 0.6; filter: brightness(0) invert(1); transition: opacity 0.3s ease; }
 .social-btn:hover .social-img-icon { opacity: 1; }
 
 /* Music Card */
@@ -268,11 +266,86 @@ body {
 .project-card h3 { font-size: 0.8rem; margin: 0 0 10px 0; opacity: 0.7; }
 .project-card p { font-size: 0.9rem; line-height: 1.5; opacity: 0.8; margin: 0;}
 .project-btn { 
-  margin-top: auto; padding: 10px 20px; background: rgba(255,255,255,0.08); 
-  border: 2px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; cursor: pointer; 
-  transition: 0.3s; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; filter: saturate(0.3); text-decoration: none;
+  margin-top: auto; 
+  padding: 10px 20px; 
+  background: rgba(255, 255, 255, 0.08); 
+  border: none; 
+  color: var(--project-color); 
+  border-radius: 10px; 
+  cursor: pointer; 
+  transition: 0.3s ease; 
+  font-family: var(--font-body);
+  font-size: 0.85rem; 
+  font-weight: 600; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  text-decoration: none;
+  filter: saturate(0.5);
 }
-.project-btn:hover { filter: saturate(1); letter-spacing: 0.03em; }
+.project-btn:hover { 
+  background: var(--project-bg-hover); 
+  filter: saturate(1);
+  letter-spacing: 0.03em;
+}
+
+/* Skeleton Project Card */
+.skeleton-card {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 2.5s infinite linear;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 24px;
+  margin-bottom: 8px;
+}
+
+.skeleton-date {
+  width: 30%;
+  height: 12px;
+  margin-bottom: 12px;
+}
+
+.skeleton-desc {
+  width: 100%;
+  height: 14px;
+  margin-bottom: 6px;
+}
+
+.skeleton-desc.short {
+  width: 80%;
+}
+
+.skeleton-tag {
+  width: 45px;
+  height: 20px;
+  border-radius: 8px;
+}
+
+.skeleton-btn {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  margin-top: auto;
+}
+
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
 .tag { font-family: var(--font-body); font-size: 0.7rem; font-weight: 600; padding: 4px 10px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: rgba(255, 255, 255, 0.6); text-transform: uppercase; transition: all 0.3s ease; }
 .card-spotlight:hover .tag { border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.12); color: #fff; }
@@ -298,10 +371,9 @@ body {
 .max-popup-img { width: 100%; height: auto; border-radius: 20px; object-fit: contain; }
 
 /* =========================================
-   MOBILE ADAPTATION DETAILS (ЭКРАНЫ МЕНЬШЕ 768px)
+   (ЭКРАНЫ МЕНЬШЕ 768px)
 ========================================= */
 @media (max-width: 767px) {
-  /* Уменьшаем отступы в карточках, чтобы влез контент */
   .card { padding: 14px; }
   
   /* Pagination Dots */
@@ -350,13 +422,82 @@ body {
   .project-card p { 
     font-size: 0.65rem; 
     line-height: 1.3;
-    /* Если текст описания слишком длинный, он обрежется троеточием после 2-й строки */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .project-btn { padding: 6px 10px; font-size: 0.65rem; border-radius: 8px; margin-top: 8px;}
+  .project-btn { padding: 8px 12px; font-size: 0.7rem; border-radius: 12px; margin-top: 8px; letter-spacing: 0.5px; }
   .tags { margin-top: 6px; gap: 4px; }
   .tag { font-size: 0.5rem; padding: 2px 6px; }
+  
+  .lang-switcher-container { bottom: 20px; left: 20px; }
+  .lang-globe-btn { width: 40px; height: 40px; }
+  .lang-globe-btn svg { width: 20px; height: 20px; }
+  .lang-dropdown { bottom: 50px; }
+}
+
+/* Language Switcher */
+.lang-switcher-container {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lang-globe-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lang-globe-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.lang-dropdown {
+  position: absolute;
+  bottom: 60px; /* Above the button */
+  left: 0;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  backdrop-filter: blur(20px);
+  transform-origin: bottom left;
+}
+
+.lang-option {
+  padding: 8px 16px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+
+.lang-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.lang-option.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
