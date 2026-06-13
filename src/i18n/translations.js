@@ -13,7 +13,8 @@ export const translations = {
     projSdfDesc: "My pastebin clone",
     projDnsDesc: "DNS configuration utility",
     comingSoon: "Coming Soon",
-    comingSoonDesc: "New project in development"
+    comingSoonDesc: "New project in development",
+    projFCSDesc: "Integrating a Media File Converter into the Context Menu (NileSoft Shell)"
   },
   ru: {
     role: "Frontend-Разработчик",
@@ -29,6 +30,7 @@ export const translations = {
     projSdfDesc: "Мой клон pastebin",
     projDnsDesc: "Утилита настройки DNS",
     comingSoon: "Скоро...",
-    comingSoonDesc: "Новый проект в разработке"
+    comingSoonDesc: "Новый проект в разработке",
+    projFCSDesc: "Интеграция конвертера медиафайлов в контекстное меню (NileSoft Shell)"
   }
 };
