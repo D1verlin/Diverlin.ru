@@ -6,6 +6,9 @@ export const translations = {
     loading: "Loading...",
     errorLoading: "Error loading data",
     apiLimitReached: "API Limit Reached",
+    offlineMode: "Offline Mode",
+    retry: "Retry",
+    githubBioFallback: "Frontend developer creating desktop customizers, scripts, and automation tools.",
     openProject: "Open Project",
     projWsaDesc: "windows system assistant",
     projBhDesc: "Bookmarks makers with out in JSON",
@@ -15,6 +18,7 @@ export const translations = {
     comingSoon: "Coming Soon",
     comingSoonDesc: "New project in development",
     projFCSDesc: "Integrating a Media File Converter into the Context Menu (NileSoft Shell)",
+    projDLDesc: "Custom launcher for Minecraft",
     projVkCDesc: "Configurator for Vortex-K06 keyboard"
   },
   ru: {
@@ -24,6 +28,9 @@ export const translations = {
     loading: "Загрузка...",
     errorLoading: "Ошибка загрузки",
     apiLimitReached: "Превышен лимит API",
+    offlineMode: "Автономный режим",
+    retry: "Повторить",
+    githubBioFallback: "Frontend-разработчик, создающий кастомизаторы рабочего стола, скрипты и инструменты автоматизации.",
     openProject: "Открыть проект",
     projWsaDesc: "Системный ассистент для Windows",
     projBhDesc: "Менеджер закладок с выводом в JSON",

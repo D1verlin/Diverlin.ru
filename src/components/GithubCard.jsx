@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaGithub, FaExternalLinkAlt, FaCodeBranch, FaExclamationCircle } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaCodeBranch, FaExclamationCircle, FaSync } from 'react-icons/fa';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const GithubCard = () => {
@@ -8,67 +8,148 @@ const GithubCard = () => {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOffline, setIsOffline] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
+  const FALLBACK_DATA = {
+    user: {
+      public_repos: 12,
+      followers: 8,
+      bio: "",
+      html_url: "https://github.com/D1verlin"
+    },
+    repos: [
+      {
+        id: "Vortex-K06-Configurator",
+        name: "Vortex-K06-Configurator",
+        html_url: "https://github.com/D1verlin/Vortex-K06-Configurator",
+        commitsCount: 12
+      },
+      {
+        id: "DivLauncher",
+        name: "DivLauncher",
+        html_url: "https://github.com/D1verlin/DivLauncher",
+        commitsCount: 28
+      },
+      {
+        id: "DNS-Manager",
+        name: "DNS-Manager",
+        html_url: "https://github.com/D1verlin/DNS-Manager",
+        commitsCount: 15
+      }
+    ]
+  };
+
+  const fetchData = async (forceRefetch = false) => {
+    if (forceRefetch) {
+      setRetrying(true);
+    } else {
+      setLoading(true);
+    }
+    setError(null);
+
+    try {
+      if (!forceRefetch) {
         const cachedData = sessionStorage.getItem('github_data_v4');
         if (cachedData) {
           const parsed = JSON.parse(cachedData);
           setData(parsed.user);
           setRepos(parsed.repos);
+          setIsOffline(false);
           setLoading(false);
           return;
         }
-        
-        const [userRes, reposRes] = await Promise.all([
-          fetch("https://api.github.com/users/D1verlin"),
-          fetch("https://api.github.com/users/D1verlin/repos?sort=updated&per_page=3")
-        ]);
-
-        if (userRes.status === 403 || reposRes.status === 403) {
-          setError('apiLimitReached');
-          setLoading(false);
-          return;
-        }
-
-        const userJson = await userRes.json();
-        let reposJson = await reposRes.json();
-
-        if (userRes.ok && reposRes.ok) {
-          reposJson = await Promise.all(reposJson.map(async (repo) => {
-            try {
-              const commitsRes = await fetch(`https://api.github.com/repos/D1verlin/${repo.name}/commits?per_page=1`);
-              let commitsCount = 0;
-              if (commitsRes.ok) {
-                const linkHeader = commitsRes.headers.get('link');
-                if (linkHeader) {
-                  const match = linkHeader.match(/page=(\d+)>; rel="last"/);
-                  if (match) commitsCount = parseInt(match[1]);
-                } else {
-                  const commits = await commitsRes.clone().json();
-                  commitsCount = commits.length;
-                }
-              }
-              return { ...repo, commitsCount };
-            } catch (e) {
-              return repo;
-            }
-          }));
-
-          sessionStorage.setItem('github_data_v4', JSON.stringify({ user: userJson, repos: reposJson }));
-          setData(userJson);
-          setRepos(reposJson);
-        } else {
-          setError('errorLoading');
-        }
-      } catch (e) {
-        console.error("Error fetching GitHub API.", e);
-        setError('errorLoading');
-      } finally {
-        setLoading(false);
       }
-    };
+
+      const [userRes, reposRes] = await Promise.all([
+        fetch("https://api.github.com/users/D1verlin"),
+        fetch("https://api.github.com/users/D1verlin/repos?sort=updated&per_page=3")
+      ]);
+
+      if (userRes.status === 403 || reposRes.status === 403) {
+        setError('apiLimitReached');
+        setIsOffline(true);
+        // Load fallback/cached data if api limit is hit
+        const cachedData = sessionStorage.getItem('github_data_v4');
+        if (cachedData) {
+          const parsed = JSON.parse(cachedData);
+          setData(parsed.user);
+          setRepos(parsed.repos);
+        } else {
+          setData(FALLBACK_DATA.user);
+          setRepos(FALLBACK_DATA.repos);
+        }
+        setLoading(false);
+        setRetrying(false);
+        return;
+      }
+
+      if (!userRes.ok || !reposRes.ok) {
+        setError('errorLoading');
+        setIsOffline(true);
+        const cachedData = sessionStorage.getItem('github_data_v4');
+        if (cachedData) {
+          const parsed = JSON.parse(cachedData);
+          setData(parsed.user);
+          setRepos(parsed.repos);
+        } else {
+          setData(FALLBACK_DATA.user);
+          setRepos(FALLBACK_DATA.repos);
+        }
+        setLoading(false);
+        setRetrying(false);
+        return;
+      }
+
+      const userJson = await userRes.json();
+      let reposJson = await reposRes.json();
+
+      reposJson = await Promise.all(reposJson.map(async (repo) => {
+        try {
+          const commitsRes = await fetch(`https://api.github.com/repos/D1verlin/${repo.name}/commits?per_page=1`);
+          let commitsCount = 0;
+          if (commitsRes.ok) {
+            const linkHeader = commitsRes.headers.get('link');
+            if (linkHeader) {
+              const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+              if (match) commitsCount = parseInt(match[1]);
+            } else {
+              const commits = await commitsRes.clone().json();
+              commitsCount = commits.length;
+            }
+          }
+          return { ...repo, commitsCount };
+        } catch (e) {
+          return repo;
+        }
+      }));
+
+      sessionStorage.setItem('github_data_v4', JSON.stringify({ user: userJson, repos: reposJson }));
+      setData(userJson);
+      setRepos(reposJson);
+      setIsOffline(false);
+      setError(null);
+    } catch (e) {
+      console.error("Error fetching GitHub API.", e);
+      setError('errorLoading');
+      setIsOffline(true);
+      
+      const cachedData = sessionStorage.getItem('github_data_v4');
+      if (cachedData) {
+        const parsed = JSON.parse(cachedData);
+        setData(parsed.user);
+        setRepos(parsed.repos);
+      } else {
+        setData(FALLBACK_DATA.user);
+        setRepos(FALLBACK_DATA.repos);
+      }
+    } finally {
+      setLoading(false);
+      setRetrying(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -79,19 +160,27 @@ const GithubCard = () => {
           <FaGithub size={20} className="github-icon-top" />
           <span className="github-title">GitHub</span>
         </div>
-        {data && !error && (
-          <a href={data.html_url} target="_blank" rel="noreferrer" className="github-header-link">
-            <FaExternalLinkAlt size={14} />
-          </a>
-        )}
+        <div className="github-header-right">
+          {isOffline && (
+            <button 
+              onClick={() => fetchData(true)} 
+              disabled={retrying} 
+              className={`github-header-retry-btn ${retrying ? 'spinning' : ''}`}
+              title={`${t('offlineMode')} (${t(error || 'errorLoading')}). ${t('retry')}`}
+            >
+              {retrying ? <FaSync size={12} /> : <FaExclamationCircle size={14} />}
+            </button>
+          )}
+          {data && (
+            <a href={data.html_url || "https://github.com/D1verlin"} target="_blank" rel="noreferrer" className="github-header-link">
+              <FaExternalLinkAlt size={14} />
+            </a>
+          )}
+        </div>
       </div>
+
       {loading ? (
         <div className="github-loading">{t('loading')}</div>
-      ) : error ? (
-        <div className="github-error">
-          <FaExclamationCircle size={24} style={{ marginBottom: '8px' }} />
-          <span>{t(error)}</span>
-        </div>
       ) : data ? (
         <div className="github-content">
           <div className="github-profile-row">
@@ -122,7 +211,19 @@ const GithubCard = () => {
           </div>
         </div>
       ) : (
-        <div className="github-error">{t('errorLoading')}</div>
+        <div className="github-error">
+          <FaExclamationCircle size={24} style={{ marginBottom: '8px' }} />
+          <span>{t(error || 'errorLoading')}</span>
+          <button 
+            onClick={() => fetchData(true)} 
+            disabled={retrying} 
+            className={`github-retry-button ${retrying ? 'spinning' : ''}`}
+            style={{ marginTop: '10px' }}
+          >
+            <FaSync size={12} style={{ marginRight: '6px' }} />
+            {t('retry')}
+          </button>
+        </div>
       )}
     </div>
   );

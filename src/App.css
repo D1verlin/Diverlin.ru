@@ -210,7 +210,74 @@ body {
 .github-repo-card:hover { background: rgba(255, 255, 255, 0.12);  opacity: 1; transform: scale(1.02) translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); z-index: 20; }
 .repo-name { font-size: 0.85rem; font-weight: 600; font-family: var(--font-body); letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; color: #fff; flex: 1; text-align: left; }
 .repo-commits { font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); display: flex; align-items: center; gap: 6px; font-weight: 600; margin-left: 10px; font-family: monospace;}
-.github-loading, .github-error { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; }
+.github-loading { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; }
+.github-error {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  text-align: center;
+}
+.github-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.github-header-retry-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #ff5555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+.github-header-retry-btn:hover {
+  opacity: 1;
+  color: #ff6e6e;
+  transform: scale(1.1);
+}
+.github-header-retry-btn:active {
+  transform: scale(0.9);
+}
+.github-header-retry-btn.spinning svg {
+  animation: github-spin 1.2s linear infinite;
+  color: rgba(255, 255, 255, 0.6);
+}
+.github-retry-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #fff;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.github-retry-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.github-retry-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.github-retry-button.spinning svg {
+  animation: github-spin 1.2s linear infinite;
+}
+@keyframes github-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 .git-header {font-weight: bold; letter-spacing: 0.05em; font-size: 16px;}
 
 /* Socials Card */
@@ -585,4 +652,43 @@ body {
 .lang-option.active {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
+}
+
+/* Expanded Socials / Max Card Styles */
+.socials-card.expanded {
+  padding: 0 !important;
+}
+.max-expanded-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+}
+.max-expanded-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+.max-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+.max-close-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
 }

@@ -10,7 +10,6 @@ import MusicCard from './components/MusicCard';
 import MiniPlayer from './components/MiniPlayer';
 import ProjectCard from './components/ProjectCard';
 import EmptyProjectCard from './components/EmptyProjectCard';
-import MaxPopup from './components/MaxPopup';
 
 import { Globe } from 'lucide-react';
 
@@ -74,7 +73,22 @@ const AppContent = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
   const [isBgBlur, setIsBgBlur] = useState(false);
-  const [isMaxPopupOpen, setIsMaxPopupOpen] = useState(false);
+  const [isMaxActive, setIsMaxActive] = useState(false);
+  const [isSocialsExpanded, setIsSocialsExpanded] = useState(false);
+
+  const handleOpenMax = () => {
+    setIsMaxActive(true);
+    setTimeout(() => {
+      setIsSocialsExpanded(true);
+    }, 300);
+  };
+
+  const handleCloseMax = () => {
+    setIsSocialsExpanded(false);
+    setTimeout(() => {
+      setIsMaxActive(false);
+    }, 400);
+  };
 
   // States Аудио
   const [currentTrack, setCurrentTrack] = useState(() => {
@@ -152,10 +166,10 @@ const AppContent = () => {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [currentSlide, isAnimating]);
+  }, [currentSlide, isAnimating, isMaxActive]);
 
   const changeSlide = (direction) => {
-    if (isAnimating) return;
+    if (isAnimating || isMaxActive) return;
     if (direction === 'down' && currentSlide < slidesData.length - 1) { setCurrentSlide(p => p + 1); setIsAnimating(true); }
     else if (direction === 'up' && currentSlide > 0) { setCurrentSlide(p => p - 1); setIsAnimating(true); }
   };
@@ -188,7 +202,7 @@ const AppContent = () => {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [currentSlide, isAnimating]);
+  }, [currentSlide, isAnimating, isMaxActive]);
 
   useEffect(() => { if (isAnimating) setTimeout(() => setIsAnimating(false), 500); }, [isAnimating]);
 
@@ -210,7 +224,7 @@ const AppContent = () => {
     [ 
       { id: 'profile', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <ProfileCard /> }, 
       { id: 'github', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <GithubCard /> }, 
-      { id: 'socials', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <SocialsCard onMaxPopup={() => setIsMaxPopupOpen(true)} /> }, 
+      { id: 'socials', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <SocialsCard isMaxActive={isMaxActive} isSocialsExpanded={isSocialsExpanded} onOpen={handleOpenMax} onClose={handleCloseMax} /> }, 
       { id: 'music', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <MusicCard 
                       track={playlist[currentTrack]} isPlaying={isPlaying} progress={progress} duration={duration} volume={volume}
                       onTogglePlay={() => setIsPlaying(!isPlaying)}
@@ -268,33 +282,67 @@ const AppContent = () => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {isMaxPopupOpen && <MaxPopup onClose={() => setIsMaxPopupOpen(false)} />}
-      </AnimatePresence>
-
       <div className="slider-container">
         <AnimatePresence mode='wait'>
           <motion.div key={currentSlide} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: -60, opacity: 0 }} transition={{ duration: 0.35, ease: "easeOut" }} className="grid-wrapper">
-            {slidesData[currentSlide].map((item, index) => (
-               <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 + 0.1, duration: 0.4 }} className="grid-item-animated">
-                 <SpotlightCard spotlightColor={item.spotlightColor || "rgba(255, 255, 255, 0.15)"}>
-                    {item.c}
-                 </SpotlightCard>
-               </motion.div>
-            ))}
+            <AnimatePresence>
+              {slidesData[currentSlide]
+                .filter(item => !(currentSlide === 0 && isSocialsExpanded && item.id !== 'socials'))
+                .map((item, index) => {
+                  const isSocialsCardExpanded = currentSlide === 0 && isSocialsExpanded && item.id === 'socials';
+                  const isOtherCardHidden = currentSlide === 0 && isMaxActive && item.id !== 'socials';
+                  return (
+                    <motion.div 
+                      layout
+                      key={item.id} 
+                      initial={{ opacity: 0, scale: 0.9 }} 
+                      animate={{ 
+                        opacity: isOtherCardHidden ? 0 : 1, 
+                        scale: isOtherCardHidden ? 0.95 : 1 
+                      }} 
+                      exit={{ opacity: 0, scale: 0.8 }} 
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30
+                      }} 
+                      className="grid-item-animated"
+                      style={{
+                        gridColumn: isSocialsCardExpanded ? '1 / span 2' : 'auto',
+                        gridRow: isSocialsCardExpanded ? '1 / span 2' : 'auto',
+                        zIndex: isSocialsCardExpanded ? 100 : 'auto',
+                        pointerEvents: isOtherCardHidden ? 'none' : 'auto'
+                      }}
+                    >
+                      <SpotlightCard spotlightColor={item.spotlightColor || "rgba(255, 255, 255, 0.15)"}>
+                         {item.c}
+                      </SpotlightCard>
+                    </motion.div>
+                  );
+                })}
+            </AnimatePresence>
           </motion.div>
         </AnimatePresence>
       </div>
       
-      <div className="pagination-dots">
-        {slidesData.map((_, index) => (
-          <div 
-            key={index} 
-            className={`dot ${currentSlide === index ? 'active' : ''}`} 
-            onClick={() => setCurrentSlide(index)} 
-          />
-        ))}
-      </div>
+      <AnimatePresence>
+        {!isMaxActive && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="pagination-dots"
+          >
+            {slidesData.map((_, index) => (
+              <div 
+                key={index} 
+                className={`dot ${currentSlide === index ? 'active' : ''}`} 
+                onClick={() => setCurrentSlide(index)} 
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
