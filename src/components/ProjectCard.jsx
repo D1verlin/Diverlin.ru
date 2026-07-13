@@ -2,7 +2,7 @@ import React, { useRef, useLayoutEffect } from 'react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const ProjectCard = ({ color, title, descKey, date, tags = [], link }) => {
+const ProjectCard = ({ color, title, descKey, date, tags = [], link, icon }) => {
   const { t } = useLanguage();
   const titleRef = useRef(null);
 
@@ -43,11 +43,35 @@ const ProjectCard = ({ color, title, descKey, date, tags = [], link }) => {
     };
   }, [title]);
 
+  const renderIcon = () => {
+    if (typeof icon === 'string' && icon.trim() !== '') {
+      return <img src={icon} alt={title} className="project-icon" />;
+    }
+    if (React.isValidElement(icon)) {
+      return icon;
+    }
+    if (icon) {
+      const IconComponent = icon;
+      return <IconComponent className="project-icon" style={{ color: color }} size={24} />;
+    }
+    // Fallback letter-based icon if no icon is specified
+    return (
+      <span className="project-icon-fallback" style={{ color: color }}>
+        {title ? title.charAt(0) : '?'}
+      </span>
+    );
+  };
+
   return (
-    <div className="card project-card">
+    <div className="card project-card" style={{ "--project-color": color }}>
       <div className="project-main-content">
-        <h2 ref={titleRef} style={{ color: color }}>{title}</h2>
-        <h3>{date}</h3>
+        <div className="project-header">
+          {renderIcon()}
+          <div className="project-title-meta">
+            <h2 ref={titleRef} style={{ color: color }}>{title}</h2>
+            <h3>{date}</h3>
+          </div>
+        </div>
         <p>{t(descKey)}</p>
         <div className="tags">  
           {tags.map((tag, i) => <span key={i} className="tag">{tag}</span>)}

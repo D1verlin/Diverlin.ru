@@ -1,3 +1,12 @@
+import wsaIcon from '../assets/WSA.svg';
+import bookmarksHubIcon from '../assets/Bookmarks Hub.svg';
+import crtOverlayIcon from '../assets/CRT Overlay.svg';
+import sdfIcon from '../assets/SDF.svg';
+import dnsManagerIcon from '../assets/DNS Manager.svg';
+import fileConverterShellIcon from '../assets/FileConverterShell.svg';
+import divLauncherIcon from '../assets/DivLauncher.svg';
+import vortexIcon from '../assets/Vortex-K06-Configurator.svg';
+
 export const backgrounds = [
   "https://r2.diverlin.ru/Assets/Wallpaper/sakura-forest-minecraft.1920x1080_web.webm",
   "https://r2.diverlin.ru/Assets/Wallpaper/raindrops-minecraft.1920x1080_web.webm",
@@ -13,10 +22,12 @@ export const playlist = [
 ];
 
 export const projectsList = [
-  { color: "#86edff", title: "WSA", descKey: "projWsaDesc", date: "12.06.2023", tags: ["HTML", "CSS", "JS"], link: "https://wsa.diverlin.ru" },
-  { color: "#d06bff", title: "Bookmarks Hub", descKey: "projBhDesc", date: "17.06.2025", tags: ["React", "JSON"], link: "https://bh.diverlin.ru" },
-  { color: "#54e460", title: "CRT Overlay", descKey: "projCrtDesc", date: "06.10.2025", tags: ["Python", "PyQt6", "PySide6"], link: "https://github.com/D1verlin/desktop-crt-overlay" },
-  { color: "#ff7070", title: "SDF", descKey: "projSdfDesc", date: "17.02.2026", tags: ["Node.js", "Express", "Sqlite"], link: "https://sdf.diverlin.ru" },
-  { color: "#85ffae", title: "DNS Manager", descKey: "projDnsDesc", date: "31.05.2026", tags: ["PowerShell", ".NET"], link: "https://github.com/D1verlin/DNS-Manager" },
-  { color: "#4789d4", title: "FileConverterShell", descKey: "projFCSDesc", date: "14.06.2026", tags: ["Powershell", "NWScript", "FFmpeg"], link: "https://github.com/D1verlin/FileConverterShell"}
+  { color: "#86edff", title: "WSA", descKey: "projWsaDesc", date: "12.06.2023", tags: ["HTML", "CSS", "JS"], link: "https://wsa.diverlin.ru", icon: wsaIcon },
+  { color: "#d06bff", title: "Bookmarks Hub", descKey: "projBhDesc", date: "17.06.2025", tags: ["React", "JSON"], link: "https://bh.diverlin.ru", icon: bookmarksHubIcon },
+  { color: "#54e460", title: "CRT Overlay", descKey: "projCrtDesc", date: "06.10.2025", tags: ["Python", "PyQt6", "PySide6"], link: "https://github.com/D1verlin/desktop-crt-overlay", icon: crtOverlayIcon },
+  { color: "#ff7070", title: "SDF", descKey: "projSdfDesc", date: "17.02.2026", tags: ["Node.js", "Express", "Sqlite"], link: "https://sdf.diverlin.ru", icon: sdfIcon },
+  { color: "#85ffae", title: "DNS Manager", descKey: "projDnsDesc", date: "31.05.2026", tags: ["PowerShell", ".NET"], link: "https://github.com/D1verlin/DNS-Manager", icon: dnsManagerIcon },
+  { color: "#4789d4", title: "FileConverterShell", descKey: "projFCSDesc", date: "14.06.2026", tags: ["Powershell", "NWScript", "FFmpeg"], link: "https://github.com/D1verlin/FileConverterShell", icon: fileConverterShellIcon },
+  { color: "#7c97ee", title: "DivLauncher", descKey:"projDLDesc", date: "21.03.2026", tags: ["Electron", "Node.js", "React", "Axios"], link: "https://d1verlin.github.io/DivLauncher", icon: divLauncherIcon },
+  { color: "#da7397", title: "Vortex-K06-Configurator", descKey: "projVkCDesc", date: "10.07.2026", tags: ["Python", "AutoHotkey"], link: "https://github.com/D1verlin/Vortex-K06-Configurator", icon: vortexIcon }
 ];

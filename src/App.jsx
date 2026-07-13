@@ -237,6 +237,7 @@ const AppContent = () => {
             date={proj.date} 
             tags={proj.tags} 
             link={proj.link} 
+            icon={proj.icon}
          />
     }));
 
