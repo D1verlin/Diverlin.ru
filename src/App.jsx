@@ -10,6 +10,7 @@ import MusicCard from './components/MusicCard';
 import MiniPlayer from './components/MiniPlayer';
 import ProjectCard from './components/ProjectCard';
 import EmptyProjectCard from './components/EmptyProjectCard';
+import Preloader from './components/Preloader';
 
 import { Globe } from 'lucide-react';
 
@@ -69,6 +70,9 @@ const LanguageSwitcher = () => {
 // MAIN APP CONTENT
 // =========================================
 const AppContent = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const mainVideoRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
@@ -111,6 +115,13 @@ const AppContent = () => {
     audioRef.current = new Audio(playlist[currentTrack].src);
     audioRef.current.volume = volume;
   }
+
+  useEffect(() => {
+    const video = mainVideoRef.current;
+    if (video && video.readyState >= 2) {
+      setTimeout(() => setIsVideoReady(true), 0);
+    }
+  }, []);
 
   // Обновление прогресса
   useEffect(() => {
@@ -270,7 +281,29 @@ const AppContent = () => {
 
   return (
     <div className="app-container">
-      <video key={bgIndex} className={`bg-video ${isBgBlur ? 'blur-active' : ''}`} autoPlay loop muted playsInline>
+      <AnimatePresence>
+        {isLoading && (
+          <Preloader
+            key="preloader"
+            isVideoReady={isVideoReady}
+            onComplete={() => setIsLoading(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <video
+        key={bgIndex}
+        ref={mainVideoRef}
+        className={`bg-video ${isBgBlur ? 'blur-active' : ''}`}
+        autoPlay
+        loop
+        muted
+        playsInline
+        onCanPlay={() => setIsVideoReady(true)}
+        onCanPlayThrough={() => setIsVideoReady(true)}
+        onPlaying={() => setIsVideoReady(true)}
+        onLoadedData={() => setIsVideoReady(true)}
+      >
         <source src={backgrounds[bgIndex]} type="video/webm" />
       </video>
       
