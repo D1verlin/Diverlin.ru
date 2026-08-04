@@ -133,7 +133,7 @@ const Preloader = ({ isVideoReady, onComplete }) => {
 
   // Completion trigger
   useEffect(() => {
-    if (progress >= 1000) {
+    if (progress >= 100) {
       const timer = setTimeout(() => {
         if (onComplete) onComplete();
       }, 300);
