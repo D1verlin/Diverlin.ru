@@ -19,7 +19,8 @@ export const translations = {
     comingSoonDesc: "New project in development",
     projFCSDesc: "Integrating a Media File Converter into the Context Menu (NileSoft Shell)",
     projDLDesc: "Custom launcher for Minecraft",
-    projVkCDesc: "Configurator for Vortex-K06 keyboard"
+    projVkCDesc: "Configurator for Vortex-K06 keyboard",
+    projYtDlpDesc: "A desktop GUI client for yt-dlp with an minimalist interface."
   },
   ru: {
     role: "Frontend-Разработчик",
@@ -41,6 +42,7 @@ export const translations = {
     comingSoonDesc: "Новый проект в разработке",
     projFCSDesc: "Интеграция конвертера медиафайлов в контекстное меню (NileSoft Shell)",
     projDLDesc: "Пользовательский лаунчер для Minecraft",
-    projVkCDesc: "Конфигуратор для клавиатуры Vortex-K06"
+    projVkCDesc: "Конфигуратор для клавиатуры Vortex-K06",
+    projYtDlpDesc: "Настольный GUI-клиент для yt-dlp с минималистичным интерфейсом."
   }
 };
