@@ -362,7 +362,7 @@ const AppContent = () => {
         {!isMaxActive && (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, x: -50, y: 0}}
             exit={{ opacity: 0, y: 10 }}
             className="pagination-dots"
           >

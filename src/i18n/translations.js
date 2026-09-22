@@ -20,7 +20,8 @@ export const translations = {
     projFCSDesc: "Integrating a Media File Converter into the Context Menu (NileSoft Shell)",
     projDLDesc: "Custom launcher for Minecraft",
     projVkCDesc: "Configurator for Vortex-K06 keyboard",
-    projYtDlpDesc: "A desktop GUI client for yt-dlp with an minimalist interface."
+    projYtDlpDesc: "A desktop GUI client for yt-dlp with an minimalist interface.",
+    projCLDesc: "Minimalist Offline Anime Tracker & Local Media Library for Windows"
   },
   ru: {
     role: "Frontend-Разработчик",
@@ -43,6 +44,7 @@ export const translations = {
     projFCSDesc: "Интеграция конвертера медиафайлов в контекстное меню (NileSoft Shell)",
     projDLDesc: "Пользовательский лаунчер для Minecraft",
     projVkCDesc: "Конфигуратор для клавиатуры Vortex-K06",
-    projYtDlpDesc: "Настольный GUI-клиент для yt-dlp с минималистичным интерфейсом."
+    projYtDlpDesc: "Настольный GUI-клиент для yt-dlp с минималистичным интерфейсом.",
+    projCLDesc: "Минималистичный офлайн-трекер аниме и локальная медиатека для Windows"
   }
 };

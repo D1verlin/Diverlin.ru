@@ -7,6 +7,7 @@ import fileConverterShellIcon from '../assets/FileConverterShell.svg';
 import divLauncherIcon from '../assets/DivLauncher.svg';
 import vortexIcon from '../assets/Vortex-K06-Configurator.svg';
 import ytDlpIcon from '../assets/YT-DLPClient.svg';
+import CLIcon from '../assets/CheckLister.svg';
 
 export const backgrounds = [
   "https://r2.diverlin.ru/Assets/Wallpaper/sakura-forest-minecraft.1920x1080_web.webm",
@@ -31,5 +32,6 @@ export const projectsList = [
   { color: "#4789d4", title: "FileConverterShell", descKey: "projFCSDesc", date: "14.06.2026", tags: ["Powershell", "NWScript", "FFmpeg"], link: "https://github.com/D1verlin/FileConverterShell", icon: fileConverterShellIcon },
   { color: "#7c97ee", title: "DivLauncher", descKey:"projDLDesc", date: "21.03.2026", tags: ["Electron", "Node.js", "React", "Axios"], link: "https://d1verlin.github.io/DivLauncher", icon: divLauncherIcon },
   { color: "#da7397", title: "Vortex-K06-Configurator", descKey: "projVkCDesc", date: "10.07.2026", tags: ["Python", "AutoHotkey"], link: "https://github.com/D1verlin/Vortex-K06-Configurator", icon: vortexIcon },
-  { color: "#dbdada", title: "YT-DLP Client", descKey: "projYtDlpDesc", date: "07.09.2026", tags: ["Electron", "Node.js", "FFmpeg"], link: "https://github.com/D1verlin/YT-DLP-Client", icon: ytDlpIcon }
+  { color: "#dbdada", title: "YT-DLP Client", descKey: "projYtDlpDesc", date: "07.09.2026", tags: ["Electron", "Node.js", "FFmpeg"], link: "https://github.com/D1verlin/YT-DLP-Client", icon: ytDlpIcon },
+  { color: "#DF8DC6", title: "CheckLister", descKey:"projCLDesc", date: "22.09.2026", tags: ["Electron", "TypeScript", "React"], link:"https://github.com/D1verlin/Checklister", icon: CLIcon }
 ];

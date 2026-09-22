@@ -485,7 +485,7 @@ body {
 
 
 /* Pagination Dots */
-.pagination-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 20; }
+.pagination-dots { position: absolute; bottom: 20px; left: 51%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 20; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.1); }
 .dot:hover { background: rgba(255, 255, 255, 0.5); }
 .dot.active { background: #fff; transform: scale(1.5); box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); border-color: transparent; }
