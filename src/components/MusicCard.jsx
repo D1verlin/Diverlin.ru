@@ -21,10 +21,10 @@ const MusicCard = ({ track, isPlaying, progress, duration, volume, onTogglePlay,
 
   return (
     <div className="card music-card-new" onWheel={handleWheel}>
-      <motion.div layoutId="music-cover-wrapper" className="music-bg-cover" style={{ backgroundImage: `url(${track.cover})` }} />
+      <div className="music-bg-cover" style={{ backgroundImage: `url(${track.cover})` }} />
 
       <div className="music-details" style={{ marginTop: 'auto' }}>
-        <motion.h3 layoutId="music-title">{track.title}</motion.h3>
+        <h3>{track.title}</h3>
         <p>{track.author}</p>
       </div>
 

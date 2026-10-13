@@ -29,6 +29,7 @@
     align-items: center;
     cursor: grab;
     overflow: visible;
+    touch-action: none;
 }
 
 .seek-track-root:active { cursor: grabbing; }

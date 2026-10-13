@@ -19,7 +19,9 @@ const EmptyProjectCard = () => {
           <div className="skeleton skeleton-tag"></div>
         </div>
       </div>
-      <div className="skeleton skeleton-btn"></div>
+      <div className="project-actions">
+        <div className="skeleton skeleton-action-btn"></div>
+      </div>
     </div>
   );
 };

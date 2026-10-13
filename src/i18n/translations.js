@@ -10,6 +10,7 @@ export const translations = {
     retry: "Retry",
     githubBioFallback: "Frontend developer creating desktop customizers, scripts, and automation tools.",
     openProject: "Open Project",
+    visitSite: "Visit Website",
     projWsaDesc: "windows system assistant",
     projBhDesc: "Bookmarks makers with out in JSON",
     projCrtDesc: "Fullscreen old CRT monitor overlay effect",
@@ -21,7 +22,8 @@ export const translations = {
     projDLDesc: "Custom launcher for Minecraft",
     projVkCDesc: "Configurator for Vortex-K06 keyboard",
     projYtDlpDesc: "A desktop GUI client for yt-dlp with an minimalist interface.",
-    projCLDesc: "Minimalist Offline Anime Tracker & Local Media Library for Windows"
+    projCLDesc: "Minimalist Offline Anime Tracker & Local Media Library for Windows",
+    projPrdDesc: "Split tunneling Windows client for AI services"
   },
   ru: {
     role: "Frontend-Разработчик",
@@ -34,6 +36,7 @@ export const translations = {
     retry: "Повторить",
     githubBioFallback: "Frontend-разработчик, создающий кастомизаторы рабочего стола, скрипты и инструменты автоматизации.",
     openProject: "Открыть проект",
+    visitSite: "Перейти на сайт",
     projWsaDesc: "Системный ассистент для Windows",
     projBhDesc: "Менеджер закладок с выводом в JSON",
     projCrtDesc: "Оверлей-эффект старого ЭЛТ/CRT монитора на весь экран",
@@ -45,6 +48,7 @@ export const translations = {
     projDLDesc: "Пользовательский лаунчер для Minecraft",
     projVkCDesc: "Конфигуратор для клавиатуры Vortex-K06",
     projYtDlpDesc: "Настольный GUI-клиент для yt-dlp с минималистичным интерфейсом.",
-    projCLDesc: "Минималистичный офлайн-трекер аниме и локальная медиатека для Windows"
+    projCLDesc: "Минималистичный офлайн-трекер аниме и локальная медиатека для Windows",
+    projPrdDesc: "Клиент выборочной маршрутизации трафика к ИИ-сервисам для Windows"
   }
 };

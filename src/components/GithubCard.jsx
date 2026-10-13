@@ -36,6 +36,12 @@ const GithubCard = () => {
         name: "DNS-Manager",
         html_url: "https://github.com/D1verlin/DNS-Manager",
         commitsCount: 15
+      },
+      {
+        id: "Checklister",
+        name: "Checklister",
+        html_url: "https://github.com/D1verlin/Checklister",
+        commitsCount: 9
       }
     ]
   };
@@ -50,7 +56,7 @@ const GithubCard = () => {
 
     try {
       if (!forceRefetch) {
-        const cachedData = sessionStorage.getItem('github_data_v4');
+        const cachedData = sessionStorage.getItem('github_data_v6');
         if (cachedData) {
           const parsed = JSON.parse(cachedData);
           setData(parsed.user);
@@ -63,14 +69,14 @@ const GithubCard = () => {
 
       const [userRes, reposRes] = await Promise.all([
         fetch("https://api.github.com/users/D1verlin"),
-        fetch("https://api.github.com/users/D1verlin/repos?sort=updated&per_page=3")
+        fetch("https://api.github.com/users/D1verlin/repos?sort=updated&per_page=4")
       ]);
 
       if (userRes.status === 403 || reposRes.status === 403) {
         setError('apiLimitReached');
         setIsOffline(true);
         // Load fallback/cached data if api limit is hit
-        const cachedData = sessionStorage.getItem('github_data_v4');
+        const cachedData = sessionStorage.getItem('github_data_v6');
         if (cachedData) {
           const parsed = JSON.parse(cachedData);
           setData(parsed.user);
@@ -87,7 +93,7 @@ const GithubCard = () => {
       if (!userRes.ok || !reposRes.ok) {
         setError('errorLoading');
         setIsOffline(true);
-        const cachedData = sessionStorage.getItem('github_data_v4');
+        const cachedData = sessionStorage.getItem('github_data_v6');
         if (cachedData) {
           const parsed = JSON.parse(cachedData);
           setData(parsed.user);
@@ -124,7 +130,7 @@ const GithubCard = () => {
         }
       }));
 
-      sessionStorage.setItem('github_data_v4', JSON.stringify({ user: userJson, repos: reposJson }));
+      sessionStorage.setItem('github_data_v6', JSON.stringify({ user: userJson, repos: reposJson }));
       setData(userJson);
       setRepos(reposJson);
       setIsOffline(false);
@@ -134,7 +140,7 @@ const GithubCard = () => {
       setError('errorLoading');
       setIsOffline(true);
       
-      const cachedData = sessionStorage.getItem('github_data_v4');
+      const cachedData = sessionStorage.getItem('github_data_v6');
       if (cachedData) {
         const parsed = JSON.parse(cachedData);
         setData(parsed.user);
@@ -152,6 +158,8 @@ const GithubCard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const visibleRepos = repos.slice(0, 3);
 
   return (
     <div className="card github-card">
@@ -198,7 +206,7 @@ const GithubCard = () => {
           {data.bio && <p className="github-bio">{data.bio}</p>}
           
           <div className="github-repos">
-            {repos.map((repo, index) => (
+            {visibleRepos.map((repo, index) => (
               <a key={repo.id} href={repo.html_url} target="_blank" rel="noreferrer" className="github-repo-card" style={{ "--depth-index": index }}>
                 <span className="repo-name">{repo.name}</span>
                 {repo.commitsCount !== undefined && (

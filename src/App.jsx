@@ -9,13 +9,15 @@ import SocialsCard from './components/SocialsCard';
 import MusicCard from './components/MusicCard';
 import MiniPlayer from './components/MiniPlayer';
 import ProjectCard from './components/ProjectCard';
+import ProjectPreviewModal from './components/ProjectPreviewModal';
 import EmptyProjectCard from './components/EmptyProjectCard';
 import Preloader from './components/Preloader';
 
-import { Globe } from 'lucide-react';
+import { Globe, X } from 'lucide-react';
 
 import { backgrounds, playlist, projectsList } from './data/constants';
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
+import { useGithubReleases } from './hooks/useGithubReleases';
 
 // --- LANGUAGE SWITCHER COMPONENT ---
 const LanguageSwitcher = () => {
@@ -77,22 +79,17 @@ const AppContent = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
   const [isBgBlur, setIsBgBlur] = useState(false);
-  const [isMaxActive, setIsMaxActive] = useState(false);
-  const [isSocialsExpanded, setIsSocialsExpanded] = useState(false);
+  const [isMaxOpen, setIsMaxOpen] = useState(false);
+  const [previewProject, setPreviewProject] = useState(null);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
-  const handleOpenMax = () => {
-    setIsMaxActive(true);
-    setTimeout(() => {
-      setIsSocialsExpanded(true);
-    }, 300);
-  };
-
-  const handleCloseMax = () => {
-    setIsSocialsExpanded(false);
-    setTimeout(() => {
-      setIsMaxActive(false);
-    }, 400);
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // States Аудио
   const [currentTrack, setCurrentTrack] = useState(() => {
@@ -109,6 +106,7 @@ const AppContent = () => {
   const [isUserSeeking, setIsUserSeeking] = useState(false);
   
   const audioRef = useRef(null);
+  const touchStartX = useRef(null);
   const touchStartY = useRef(null);
 
   if (!audioRef.current) {
@@ -165,10 +163,149 @@ const AppContent = () => {
     else audioRef.current.pause();
   }, [isPlaying]);
 
+  const profileItem = { 
+    id: 'profile', 
+    spotlightColor: "rgba(255, 255, 255, 0.15)", 
+    c: <ProfileCard /> 
+  };
+
+  const musicItem = { 
+    id: 'music', 
+    spotlightColor: "rgba(255, 255, 255, 0.15)", 
+    c: <MusicCard 
+          track={playlist[currentTrack]} isPlaying={isPlaying} progress={progress} duration={duration} volume={volume}
+          onTogglePlay={() => setIsPlaying(!isPlaying)}
+          onNext={() => { setCurrentTrack(p => (p + 1) % playlist.length); setIsPlaying(true); }}
+          onPrev={() => { setCurrentTrack(p => (p - 1 + playlist.length) % playlist.length); setIsPlaying(true); }}
+          onSeekStart={() => setIsUserSeeking(true)} onSeek={(t) => setProgress(t)}
+          onSeekEnd={(t) => { audioRef.current.currentTime = t; setIsUserSeeking(false); }}
+          onVolumeChange={setVolume}
+       /> 
+  };
+
+  const githubItem = { 
+    id: 'github', 
+    spotlightColor: "rgba(255, 255, 255, 0.15)", 
+    c: <GithubCard /> 
+  };
+
+  const socialsItem = { 
+    id: 'socials', 
+    spotlightColor: "rgba(255, 255, 255, 0.15)", 
+    c: <SocialsCard onOpen={() => setIsMaxOpen(true)} /> 
+  };
+
+  const slidesData = [];
+
+  const releasesMap = useGithubReleases(projectsList);
+
+  const getProjectRelease = (proj) => {
+    const key = proj.github || proj.link;
+    if (key && releasesMap[key] !== undefined) {
+      return releasesMap[key];
+    }
+    return proj.latestRelease;
+  };
+
+  if (isMobile) {
+    // Мобильная версия: по 2 карточки на слайд
+    slidesData.push([profileItem, musicItem]);
+    slidesData.push([githubItem, socialsItem]);
+
+    for (let i = 0; i < projectsList.length; i += 2) {
+      const pageProjects = projectsList.slice(i, i + 2);
+      const slideItems = pageProjects.map((proj, idx) => ({
+        id: `project-${i + idx}`,
+        spotlightColor: `${proj.color}40`,
+        c: <ProjectCard 
+              color={proj.color} 
+              title={proj.title} 
+              descKey={proj.descKey} 
+              date={proj.date} 
+              tags={proj.tags} 
+              website={proj.website}
+              github={proj.github}
+              link={proj.link} 
+              icon={proj.icon}
+              latestRelease={getProjectRelease(proj)}
+              screenshots={proj.screenshots}
+              onOpenPreview={setPreviewProject}
+           />
+      }));
+
+      while (slideItems.length < 2) {
+        const emptyIdx = slideItems.length;
+        slideItems.push({
+          id: `empty-project-${i + emptyIdx}`,
+          spotlightColor: "rgba(255, 255, 255, 0.05)",
+          c: <EmptyProjectCard />
+        });
+      }
+
+      slidesData.push(slideItems);
+    }
+  } else {
+    // Десктоп: по 4 карточки на слайд
+    slidesData.push([profileItem, githubItem, socialsItem, musicItem]);
+
+    for (let i = 0; i < projectsList.length; i += 4) {
+      const pageProjects = projectsList.slice(i, i + 4);
+      const slideItems = pageProjects.map((proj, idx) => ({
+        id: `project-${i + idx}`,
+        spotlightColor: `${proj.color}40`,
+        c: <ProjectCard 
+              color={proj.color} 
+              title={proj.title} 
+              descKey={proj.descKey} 
+              date={proj.date} 
+              tags={proj.tags} 
+              website={proj.website}
+              github={proj.github}
+              link={proj.link} 
+              icon={proj.icon}
+              latestRelease={getProjectRelease(proj)}
+              screenshots={proj.screenshots}
+              onOpenPreview={setPreviewProject}
+           />
+      }));
+
+      while (slideItems.length < 4) {
+        const emptyIdx = slideItems.length;
+        slideItems.push({
+          id: `empty-project-${i + emptyIdx}`,
+          spotlightColor: "rgba(255, 255, 255, 0.05)",
+          c: <EmptyProjectCard />
+        });
+      }
+
+      slidesData.push(slideItems);
+    }
+  }
+
+  const changeSlide = (direction) => {
+    if (isAnimating || isMaxOpen || previewProject) return;
+    const totalSlides = slidesData.length;
+    if (direction === 'down' && currentSlide < totalSlides - 1) { setCurrentSlide(p => p + 1); setIsAnimating(true); }
+    else if (direction === 'up' && currentSlide > 0) { setCurrentSlide(p => p - 1); setIsAnimating(true); }
+  };
+
+  useEffect(() => {
+    if (currentSlide >= slidesData.length) {
+      setCurrentSlide(Math.max(0, slidesData.length - 1));
+    }
+  }, [slidesData.length, currentSlide]);
+
   // Управление клавиатурой (Глобальное)
   useEffect(() => {
     const handleKey = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (isMaxOpen) {
+        if (e.code === 'Escape') setIsMaxOpen(false);
+        return;
+      }
+      if (previewProject) {
+        return;
+      }
       if (e.code === 'Space') { e.preventDefault(); setIsPlaying(p => !p); }
       if (e.code === 'ArrowRight') { setCurrentTrack(p => (p + 1) % playlist.length); setIsPlaying(true); }
       if (e.code === 'ArrowLeft') { setCurrentTrack(p => (p - 1 + playlist.length) % playlist.length); setIsPlaying(true); }
@@ -177,31 +314,38 @@ const AppContent = () => {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [currentSlide, isAnimating, isMaxActive]);
-
-  const changeSlide = (direction) => {
-    if (isAnimating || isMaxActive) return;
-    if (direction === 'down' && currentSlide < slidesData.length - 1) { setCurrentSlide(p => p + 1); setIsAnimating(true); }
-    else if (direction === 'up' && currentSlide > 0) { setCurrentSlide(p => p - 1); setIsAnimating(true); }
-  };
+  }, [currentSlide, isAnimating, isMaxOpen, previewProject, isMobile, slidesData.length]);
 
   // Управление скроллом и свайпами для смены слайдов
   useEffect(() => {
     const handleWheel = (e) => {
+      if (isMaxOpen || previewProject) return;
       if (e.target.closest('.music-card-new') || e.target.closest('.mini-player')) return;
       if (e.deltaY > 50) changeSlide('down');
       else if (e.deltaY < -50) changeSlide('up');
     };
 
     const handleTouchStart = (e) => { 
-      if (e.target.closest('.terminal-body') || e.target.closest('.music-card-new') || e.target.closest('.github-repos')) return;
+      if (isMaxOpen || previewProject) return;
+      if (e.target.closest('.seek-track-root')) return;
+      touchStartX.current = e.touches[0].clientX;
       touchStartY.current = e.touches[0].clientY; 
     };
     const handleTouchEnd = (e) => {
-      if (!touchStartY.current) return;
-      const delta = touchStartY.current - e.changedTouches[0].clientY;
-      if (delta > 50) changeSlide('down');
-      else if (delta < -50) changeSlide('up');
+      if (isMaxOpen || previewProject || touchStartX.current === null || touchStartY.current === null) return;
+      const deltaX = touchStartX.current - e.changedTouches[0].clientX;
+      const deltaY = touchStartY.current - e.changedTouches[0].clientY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (absX > absY && absX > 40) {
+        if (deltaX > 0) changeSlide('down');
+        else changeSlide('up');
+      } else if (absY > absX && absY > 40) {
+        if (deltaY > 0) changeSlide('down');
+        else changeSlide('up');
+      }
+      touchStartX.current = null;
       touchStartY.current = null;
     };
 
@@ -213,7 +357,7 @@ const AppContent = () => {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [currentSlide, isAnimating, isMaxActive]);
+  }, [currentSlide, isAnimating, isMaxOpen, previewProject, isMobile, slidesData.length]);
 
   useEffect(() => { if (isAnimating) setTimeout(() => setIsAnimating(false), 500); }, [isAnimating]);
 
@@ -225,59 +369,9 @@ const AppContent = () => {
         setBgIndex((prev) => (prev + 1) % backgrounds.length);
         setTimeout(() => setIsBgBlur(false), 500);
       }, 1000); 
-    }, 30000); 
+    }, 60000); // 1 минута (60 секунд)
     return () => clearInterval(interval);
   }, []);
-
-  // Динамически формируем данные слайдов
-  const slidesData = [
-    // Слайд 1 (Главный экран)
-    [ 
-      { id: 'profile', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <ProfileCard /> }, 
-      { id: 'github', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <GithubCard /> }, 
-      { id: 'socials', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <SocialsCard isMaxActive={isMaxActive} isSocialsExpanded={isSocialsExpanded} onOpen={handleOpenMax} onClose={handleCloseMax} /> }, 
-      { id: 'music', spotlightColor: "rgba(255, 255, 255, 0.15)", c: <MusicCard 
-                      track={playlist[currentTrack]} isPlaying={isPlaying} progress={progress} duration={duration} volume={volume}
-                      onTogglePlay={() => setIsPlaying(!isPlaying)}
-                      onNext={() => { setCurrentTrack(p => (p + 1) % playlist.length); setIsPlaying(true); }}
-                      onPrev={() => { setCurrentTrack(p => (p - 1 + playlist.length) % playlist.length); setIsPlaying(true); }}
-                      onSeekStart={() => setIsUserSeeking(true)} onSeek={(t) => setProgress(t)}
-                      onSeekEnd={(t) => { audioRef.current.currentTime = t; setIsUserSeeking(false); }}
-                      onVolumeChange={setVolume}
-                   /> 
-      } 
-    ]
-  ];
-
-  // Слайды с проектами (по 4 на страницу)
-  for (let i = 0; i < projectsList.length; i += 4) {
-    const pageProjects = projectsList.slice(i, i + 4);
-    const slideItems = pageProjects.map((proj, idx) => ({
-      id: `project-${i + idx}`,
-      spotlightColor: `${proj.color}40`,
-      c: <ProjectCard 
-            color={proj.color} 
-            title={proj.title} 
-            descKey={proj.descKey} 
-            date={proj.date} 
-            tags={proj.tags} 
-            link={proj.link} 
-            icon={proj.icon}
-         />
-    }));
-
-    // Дополняем пустыми карточками, если проектов меньше 4 на слайде
-    while (slideItems.length < 4) {
-      const emptyIdx = slideItems.length;
-      slideItems.push({
-        id: `empty-project-${i + emptyIdx}`,
-        spotlightColor: "rgba(255, 255, 255, 0.05)",
-        c: <EmptyProjectCard />
-      });
-    }
-
-    slidesData.push(slideItems);
-  }
 
   return (
     <div className="app-container">
@@ -315,54 +409,95 @@ const AppContent = () => {
         )}
       </AnimatePresence>
 
-      <div className="slider-container">
-        <AnimatePresence mode='wait'>
-          <motion.div key={currentSlide} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: -60, opacity: 0 }} transition={{ duration: 0.35, ease: "easeOut" }} className="grid-wrapper">
+      <div className={`slider-container ${previewProject ? 'has-preview-open' : ''} ${isMaxOpen ? 'has-max-open' : ''}`}>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={currentSlide} 
+            initial={{ y: 35 }} 
+            animate={{ y: 0 }} 
+            exit={{ y: -35 }} 
+            transition={{ duration: 0.28, ease: [0.25, 1, 0.5, 1] }} 
+            className="grid-wrapper"
+          >
+            {slidesData[currentSlide]?.map((item) => (
+              <div key={item.id} className="grid-item-animated">
+                <SpotlightCard spotlightColor={item.spotlightColor || "rgba(255, 255, 255, 0.15)"}>
+                  {item.c}
+                </SpotlightCard>
+              </div>
+            ))}
+
             <AnimatePresence>
-              {slidesData[currentSlide]
-                .filter(item => !(currentSlide === 0 && isSocialsExpanded && item.id !== 'socials'))
-                .map((item, index) => {
-                  const isSocialsCardExpanded = currentSlide === 0 && isSocialsExpanded && item.id === 'socials';
-                  const isOtherCardHidden = currentSlide === 0 && isMaxActive && item.id !== 'socials';
-                  return (
-                    <motion.div 
-                      layout
-                      key={item.id} 
-                      initial={{ opacity: 0, scale: 0.9 }} 
-                      animate={{ 
-                        opacity: isOtherCardHidden ? 0 : 1, 
-                        scale: isOtherCardHidden ? 0.95 : 1 
-                      }} 
-                      exit={{ opacity: 0, scale: 0.8 }} 
-                      transition={{ 
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30
-                      }} 
-                      className="grid-item-animated"
-                      style={{
-                        gridColumn: isSocialsCardExpanded ? '1 / span 2' : 'auto',
-                        gridRow: isSocialsCardExpanded ? '1 / span 2' : 'auto',
-                        zIndex: isSocialsCardExpanded ? 100 : 'auto',
-                        pointerEvents: isOtherCardHidden ? 'none' : 'auto'
+              {isMaxOpen && (
+                <motion.div 
+                  key="max-card-expanded"
+                  initial={{ 
+                    opacity: 0, 
+                    scale: 0.48, 
+                    originX: isMobile ? 0.5 : 0, 
+                    originY: 1 
+                  }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    originX: isMobile ? 0.5 : 0, 
+                    originY: 1,
+                    transition: { 
+                      duration: 0.35, 
+                      ease: [0.16, 1, 0.3, 1] 
+                    }
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0.48, 
+                    originX: isMobile ? 0.5 : 0, 
+                    originY: 1,
+                    transition: {
+                      scale: { duration: 0.35, ease: [0.25, 1, 0.5, 1] },
+                      opacity: { duration: 0.22, delay: 0.1, ease: "easeOut" }
+                    }
+                  }}
+                  className="max-card-full"
+                >
+                  <div className="max-card-inner">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMaxOpen(false);
                       }}
+                      className="max-close-btn"
+                      aria-label="Close"
                     >
-                      <SpotlightCard spotlightColor={item.spotlightColor || "rgba(255, 255, 255, 0.15)"}>
-                         {item.c}
-                      </SpotlightCard>
-                    </motion.div>
-                  );
-                })}
+                      <X size={20} />
+                    </button>
+                    <img 
+                      src="https://r2.diverlin.ru/Assets/max_final.webp" 
+                      alt="Max" 
+                      className="max-expanded-img"
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {previewProject && (
+                <ProjectPreviewModal
+                  project={previewProject}
+                  onClose={() => setPreviewProject(null)}
+                  isMobile={isMobile}
+                />
+              )}
             </AnimatePresence>
           </motion.div>
         </AnimatePresence>
       </div>
       
       <AnimatePresence>
-        {!isMaxActive && (
+        {!isMaxOpen && !previewProject && (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, x: -50, y: 0}}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             className="pagination-dots"
           >
